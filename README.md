@@ -1,0 +1,2 @@
+# Running Testbenches
+To run the testbenches using `cocotb` (building with `verilator`), simply run `pytest` from within the virtual environment. As long as you are in the root of the project or `tb/`, then the tests will be discovered and ran.
