@@ -1,0 +1,3 @@
++typedef-structs-unions=allow_anonymous_nested:true
+-no-trailing-spaces
+-line-length
