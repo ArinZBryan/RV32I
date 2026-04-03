@@ -1,6 +1,7 @@
 package types;
     typedef logic [4:0] regref_t;
     typedef logic [31:0] word_t;
+    typedef logic [32:0] alu_res_t;
 
     typedef struct packed {
         union packed {
@@ -43,26 +44,49 @@ package types;
         logic [6:0] opcode;
     } raw_instruction_t;
     
-    typedef enum logic [3:0] {
-        INSTR_TYPE_R,
-        INSTR_TYPE_IMATHS,
-        INSTR_TYPE_ILOAD,
-        INSTR_TYPE_IJALR,
-        INSTR_TYPE_ICSR,
-        INSTR_TYPE_S,
-        INSTR_TYPE_B,
-        INSTR_TYPE_U,
-        INSTR_TYPE_J,
-        INSTR_TYPE_FENCE,
-        INSTR_TYPE_INVALID
-    } instruction_type_t;
-    
-    typedef struct packed {
-        instruction_type_t itype;
-        logic [4:0] rs1, rs2, rd;
-        logic [2:0] funct3;
-        logic [6:0] funct7;
-        logic [31:0] imm;
+    typedef enum logic[3:0] {
+        ALU_ADD =  4'b0000,
+        ALU_SUB =  4'b1000,
+        ALU_XOR =  4'b0100,
+        ALU_OR  =  4'b0110,
+        ALU_AND =  4'b0111,
+        ALU_LSHL = 4'b0001,
+        ALU_LSHR = 4'b0101,
+        ALU_ASHR = 4'b1101,
+        ALU_SLT =  4'b0010,
+        ALU_SLTU = 4'b0011
+    } alu_op_e;
+
+    typedef enum logic[1:0] {
+        RROUTE_ALU_RD,
+        RROUTE_ALU_MEMREAD_RD,
+        RROUTE_ALU_MEMWRITE,
+        RROUTE_PC_RD_ALU_PC
+    } result_route_e;
+
+    typedef enum logic[2:0] {
+        BRANCH_NOBRANCH, 
+        BRANCH_OFFSET_ZERO, 
+        BRANCH_OFFSET_NZERO, 
+        BRANCH_OFFSET_ALWAYS, 
+        BRANCH_ABSOLUTE 
+    } branch_op_e;
+
+    typedef enum logic[1:0] {
+        SRCSET_RS1_RS2, 
+        SRCSET_RS1_IMM, 
+        SRCSET_PC_IMM
+    } source_set_e;
+
+    typedef struct {
+        branch_op_e branch_operation;
+        result_route_e result_route;
+        alu_op_e alu_operation;
+        source_set_e data_sources;
+        regref_t rd;
+        word_t imm;
+        regref_t rs2;
+        regref_t rs1;
     } instruction_t;
 
 endpackage
