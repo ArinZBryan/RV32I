@@ -58,35 +58,35 @@ package types;
     } alu_op_e;
 
     typedef enum logic[1:0] {
-        RROUTE_ALU_RD,
-        RROUTE_ALU_MEMREAD_RD,
-        RROUTE_ALU_MEMWRITE,
-        RROUTE_PC_RD_ALU_PC
+        RROUTE_ALU_RD         = 0,
+        RROUTE_ALU_MEMREAD_RD = 1,
+        RROUTE_ALU_MEMWRITE   = 2,
+        RROUTE_PC_RD_ALU_PC   = 3
     } result_route_e;
 
     typedef enum logic[2:0] {
-        BRANCH_NOBRANCH, 
-        BRANCH_OFFSET_ZERO, 
-        BRANCH_OFFSET_NZERO, 
-        BRANCH_OFFSET_ALWAYS, 
-        BRANCH_ABSOLUTE 
+        BRANCH_NOBRANCH       = 0, 
+        BRANCH_OFFSET_ZERO    = 1,
+        BRANCH_OFFSET_NZERO   = 2, 
+        BRANCH_OFFSET_ALWAYS  = 3, 
+        BRANCH_ABSOLUTE       = 4 
     } branch_op_e;
 
     typedef enum logic[1:0] {
-        SRCSET_RS1_RS2, 
-        SRCSET_RS1_IMM, 
-        SRCSET_PC_IMM
+        SRCSET_RS1_RS2 = 0, 
+        SRCSET_RS1_IMM = 1, 
+        SRCSET_PC_IMM  = 2
     } source_set_e;
 
-    typedef struct {
-        branch_op_e branch_operation;
-        result_route_e result_route;
-        alu_op_e alu_operation;
-        source_set_e data_sources;
-        regref_t rd;
-        word_t imm;
-        regref_t rs2;
-        regref_t rs1;
+    typedef struct packed {
+        branch_op_e branch_operation;   
+        result_route_e result_route;    
+        alu_op_e alu_operation;         
+        source_set_e data_sources;      
+        regref_t rd;                    
+        word_t imm;                     
+        regref_t rs2;                   
+        regref_t rs1;                   
     } instruction_t;
 
 endpackage

@@ -10,17 +10,20 @@ function automatic types::alu_res_t sext(types::word_t v);
     return { v[31], v };
 endfunction
 
+types::alu_res_t tmp;
+
 always_comb begin
+    tmp = '0;
     unique case (op)
         types::ALU_ADD: res = sext(a) + sext(b);
         types::ALU_SUB: res = sext(a) - sext(b);
         types::ALU_LSHL: res = sext(a) << sext(b); 
         types::ALU_SLT: begin 
-            types::alu_res_t tmp = sext(a) - sext(b);
+            tmp = sext(a) - sext(b);
             res = { 32'b0, tmp[32] };
         end
         types::ALU_SLTU: begin 
-            types::alu_res_t tmp = sext(a) - sext(b);
+            tmp = sext(a) - sext(b);
             res = { 32'b0, tmp[32] };
         end
         types::ALU_XOR: res = sext(a) ^ sext(b);
