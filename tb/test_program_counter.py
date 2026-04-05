@@ -5,25 +5,9 @@ import cocotb
 from cocotb.types import LogicArray, Logic, Range
 from cocotb.triggers import Timer, RisingEdge, FallingEdge, ReadOnly, ReadWrite
 from cocotb.clock import Clock
-
 from cocotb_tools.runner import get_runner
 
-TYPE_WORD_T = Range(31, 'downto', 0)
-
-async def sample(dut, clock, sampleArray: list[dict[str, object]], values: list[str]):
-    await RisingEdge(clock)
-    await ReadOnly()
-    new_samples = {}
-    for sample_point in values:
-        new_samples[sample_point] = dut[sample_point].value.to_signed()
-    sampleArray.append(new_samples)
-
-async def set(dut, clock, values: dict[str, object]):
-    await FallingEdge(clock)
-    await ReadWrite()
-    for (k, v) in values.items():
-        dut[k].value = v
-    
+from util import *
 
 async def init_testbench(dut):
     """
@@ -38,54 +22,56 @@ async def init_testbench(dut):
     
 @cocotb.test()
 async def advance_instruction_width(dut):
+    """Test normal PC functionality"""
+    
     await init_testbench(dut)
     
     pc_vals = []
     for i in range(0, 10):
-        await sample(dut, dut.Clk, pc_vals, ["PC"])
+        await sample_sync(dut, dut.Clk, pc_vals, [("PC", "int")])
     
     assert(list(map(lambda x: x["PC"], pc_vals)) == [4, 8, 12, 16, 20, 24, 28, 32, 36, 40])
     
 @cocotb.test()
 async def jump(dut):
+    """Test branching to specific addresses"""
     await init_testbench(dut)
     
     pc_vals = []
     
     # expected: []
     for i in range(0, 5):
-        await sample(dut, dut.Clk, pc_vals, ["PC"])
+        await sample_sync(dut, dut.Clk, pc_vals, [("PC", "int")])
     
-    await set(dut, dut.Clk, {
+    await set_sync(dut, dut.Clk, {
         "PC_branch_to" : LogicArray.from_signed(4000, TYPE_WORD_T),
         "Do_Branch" : Logic('1')
     })
     
-    await sample(dut, dut.Clk, pc_vals, ["PC"])
+    await sample_sync(dut, dut.Clk, pc_vals, [("PC", "int")])
     
-    await set(dut, dut.Clk, {
+    await set_sync(dut, dut.Clk, {
         "Do_Branch": Logic('0')
     })
     
     for i in range(0, 2):
-        await sample(dut, dut.Clk, pc_vals, ["PC"])
+        await sample_sync(dut, dut.Clk, pc_vals, [("PC", "int")])
     
-    await set(dut, dut.Clk, {
+    await set_sync(dut, dut.Clk, {
         "PC_branch_to" : LogicArray.from_signed(1000, TYPE_WORD_T),
         "Do_Branch" : Logic('1')
     })
     
-    await sample(dut, dut.Clk, pc_vals, ["PC"])
+    await sample_sync(dut, dut.Clk, pc_vals, [("PC", "int")])
     
-    await set(dut, dut.Clk, {
+    await set_sync(dut, dut.Clk, {
         "Do_Branch": Logic('0')
     })
     
     for i in range(0, 2):
-        await sample(dut, dut.Clk, pc_vals, ["PC"])
+        await sample_sync(dut, dut.Clk, pc_vals, [("PC", "int")])
 
     assert(list(map(lambda x: x["PC"], pc_vals)) == [4, 8, 12, 16, 20, 4000, 4004, 4008, 1000, 1004, 1008])
-    
     
 def test_program_counter_runner():
     sim = "verilator"
