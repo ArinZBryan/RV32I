@@ -13,7 +13,35 @@ logic do_branch;
 types::word_t pc_branch_to;
 types::word_t pc;
 
-program_counter module_pc (.Clk(Clk), ._Reset(Reset), .Do_Branch(do_branch), .PC_branch_to(pc_branch_to), .PC(PC));
-decoder module_decoder (.raw(raw_instruction), .decoded(decoded_instruction));
+// Register File Signals
+types::regref_t rs1, rs2;
+types::regref_t rd;
+logic wr_e;
+types::word_t instr_writeback;
+types::word_t regout_a, regout_b;
+
+program_counter module_pc (
+    .Clk(Clk), 
+    ._Reset(Reset), 
+    .Do_Branch(do_branch), 
+    .PC_branch_to(pc_branch_to), 
+    .PC(PC)
+);
+decoder module_decoder (
+    .raw(raw_instruction), 
+    .decoded(decoded_instruction)
+);
+
+register_file module_rf (
+    .clk(Clk), 
+    ._reset(_Reset), 
+    .read_reg_a(rs1), 
+    .read_reg_b(rs2), 
+    .write_reg(rd), 
+    .write_value(instr_writeback), 
+    .write_enable(wr_e), 
+    .a_out(regout_a), 
+    .b_out(regout_b)
+);
 
 endmodule
