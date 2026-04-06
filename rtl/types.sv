@@ -73,9 +73,9 @@ package types;
     } branch_op_e;
 
     typedef enum logic[1:0] {
-        SRCSET_RS1_RS2 = 0, 
-        SRCSET_RS1_IMM = 1, 
-        SRCSET_PC_IMM  = 2
+        SRCSET_RS1_RS2 = 2'b10, 
+        SRCSET_RS1_IMM = 2'b11, 
+        SRCSET_PC_IMM  = 2'b01
     } source_set_e;
 
     typedef struct packed {

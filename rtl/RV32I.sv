@@ -44,4 +44,12 @@ register_file module_rf (
     .b_out(regout_b)
 );
 
+source_mux module_srcmux (
+    .srcset(decoded_instruction.data_sources),
+    .instr_imm(decoded_instruction.imm),
+    .pc(pc),
+    .reg_rs1(regout_a),
+    .reg_rs2(regout_b)
+);
+
 endmodule

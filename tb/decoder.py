@@ -301,10 +301,10 @@ class BRANCH_OPERATION(IntEnum):
 
 # typedef enum logic[1:0] { ... } src_set_t
 class SOURCE_SET(IntEnum):
-    RS1_RS2 = 0
-    RS1_IMM = 1
-    PC_IMM =  2
-    INVALID_3 = 3
+    RS1_RS2 = 0b10
+    RS1_IMM = 0b11
+    PC_IMM =  0b01
+    INVALID_0 = 0b00
     
 class instruction(LogicArray):
     def __init__(self, value: Union[int, str, Iterable[Union[Union[str, int, bool], "Logic"]]]):
