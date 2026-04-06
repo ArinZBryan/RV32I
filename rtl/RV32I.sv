@@ -25,7 +25,7 @@ program_counter module_pc (
     ._Reset(Reset), 
     .Do_Branch(do_branch), 
     .PC_branch_to(pc_branch_to), 
-    .PC(PC)
+    .PC(pc)
 );
 decoder module_decoder (
     .raw(raw_instruction), 
