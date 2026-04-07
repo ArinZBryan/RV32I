@@ -18,6 +18,9 @@ always_comb begin
         types::SRCSET_PC_IMM: begin
             a = pc; b = instr_imm;
         end
+        default: begin
+            a = '0; b = '0; //this should never happen
+        end
     endcase
 end
 

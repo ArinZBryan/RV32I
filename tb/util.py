@@ -6,6 +6,10 @@ from typing import Literal
 TYPE_WORD_T = Range(31, 'downto', 0)
 TYPE_REGREF_T = Range(4, 'downto', 0)
 TYPE_ALURES_T = Range(32, 'downto', 0)
+TYPE_SOURCE_SET_E = Range(1, 'downto', 0)
+TYPE_BRANCH_OP_E = Range(2, 'downto', 0)
+TYPE_RESULT_ROUTE_E = Range(1, 'downto', 0)
+TYPE_ALU_OP_E = Range(3, 'downto', 0)
 
 class REG(IntEnum):
     __settings__ = NoAlias
@@ -44,6 +48,59 @@ class REG(IntEnum):
     t5 = 30
     t6 = 31
 
+# typdef enum logic[4:0] { ... } alu_op_t
+class ALU_OPERATION(IntEnum):
+    ADD =  0b0000 # d0   h0
+    LSHL = 0b0001 # d1   h1
+    SLT =  0b0010 # d2   h2
+    SLTU = 0b0011 # d3   h3
+    XOR =  0b0100 # d4   h4
+    LSHR = 0b0101 # d5   h5
+    OR  =  0b0110 # d6   h6
+    AND =  0b0111 # d7   h7
+    
+    SUB =  0b1000 # d8   h8
+    NOP9 = 0b1001 # d9   h9
+    NOPA = 0b1010 # d10  hA
+    NOPB = 0b1011 # d11  hB
+    NOPC = 0b1100 # d12  hC
+    ASHR = 0b1101 # d13  h13
+    NOPE = 0b1110 # d14  h14
+    NOPF = 0b1111 # d15  h15
+    
+# typdef enum logic[1:0] { ... } res_route_t
+class RESULT_ROUTE(IntEnum):
+    ALU_RD = 0
+    ALU_MEMREAD_RD = 1
+    ALU_MEMWRITE = 2
+    PC_RD_ALU_PC = 3
+
+# typedef enum logic[2:0] { ... } bra_op_t
+class BRANCH_OPERATION(IntEnum):
+    NOBRANCH = 0
+    OFFSET_ZERO = 1
+    OFFSET_NZERO = 2
+    OFFSET_ALWAYS = 3
+    ABSOLUTE_ALU = 4
+    INVALID_5 = 5
+    INVALID_6 = 6
+    INVALID_7 = 7
+
+# typedef enum logic[1:0] { ... } src_set_t
+class SOURCE_SET(IntEnum):
+    RS1_RS2 = 0b10
+    RS1_IMM = 0b11
+    PC_IMM =  0b01
+    INVALID_0 = 0b00
+    
+def ALUOPtoLogicArray(aluop: ALU_OPERATION | int):
+    return LogicArray.from_unsigned(aluop, TYPE_ALU_OP_E)
+def RESROUTEtoLogicArray(rroute: RESULT_ROUTE | int):
+    return LogicArray.from_unsigned(rroute, TYPE_RESULT_ROUTE_E)
+def BRAOPtoLogicArray(braop: BRANCH_OPERATION | int):
+    return LogicArray.from_unsigned(braop, TYPE_BRANCH_OP_E)
+def SRCSETtoLogicArray(srcset: SOURCE_SET | int):
+    return LogicArray.from_unsigned(srcset, TYPE_SOURCE_SET_E)
 def REGtoLogicArray(reg : REG | int):
     return LogicArray.from_unsigned(reg, TYPE_REGREF_T)
 def WORDtoLogicArray(word: int):
