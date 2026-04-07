@@ -27,6 +27,7 @@ program_counter module_pc (
     .PC_branch_to(pc_branch_to), 
     .PC(pc)
 );
+
 decoder module_decoder (
     .raw(raw_instruction), 
     .decoded(decoded_instruction)
@@ -48,8 +49,10 @@ source_mux module_srcmux (
     .srcset(decoded_instruction.data_sources),
     .instr_imm(decoded_instruction.imm),
     .pc(pc),
-    .reg_rs1(regout_a),
-    .reg_rs2(regout_b)
+    .reg_rs1(rs1),
+    .reg_rs2(rs2),
+    .a(regout_a),
+    .b(regout_b)
 );
 
 endmodule
