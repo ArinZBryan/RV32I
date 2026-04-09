@@ -13,38 +13,6 @@ class CMP_TYPE(IntEnum):
     GE  = 5
     LTU = 6
     GEU = 7
-    
-
-def in_unsigned_bits(value: int, bits: int) -> bool:
-    """Checks if a number is a valid `bits`-bit unsigned number
-    
-    :param value: The number to check.
-    :param bits: The number of bits `value` must fit in as an unsigned number.
-    :returns: Whether the number is representable as a `bits`-bit unsigned number.
-    """
-    
-    if value < 0:
-        return False
-    elif value >= 2**bits:
-        return False
-    else:
-        return True
-
-def in_signed_bits(value: int, bits: int) -> bool:
-    """Checks if a number is a valid `bits`-bit signed number
-    
-    :param value: The number to check.
-    :param bits: The number of bits `value` must fit in as a signed number.
-    :returns: Whether the number is representable as a `bits`-bit signed number using 2's complement
-    """
-    
-    if value < (-(2**(bits - 1))):
-        return False
-    elif value > (2**(bits-1) - 1):
-        return False
-    else:
-        return True
-
 
 class raw_instruction(LogicArray):
     def __init__(self, value: Union[int, str, Iterable[Union[Union[str, int, bool], "Logic"]]]):

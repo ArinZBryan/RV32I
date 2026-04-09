@@ -8,35 +8,36 @@ from cocotb.clock import Clock
 from cocotb_tools.runner import get_runner
 
 from util import *
+from bitint import *
     
 @cocotb.test()
 async def test_srcset_opts(dut):
     samples : list[dict[str, object]] = []
     
     await set_comb(dut, {
-        "input_instr_imm" : WORDtoLogicArray(0x696d6d),
-        "input_pc"        : WORDtoLogicArray(0x7063),
-        "input_reg_rs1"   : WORDtoLogicArray(0x727331),
-        "input_reg_rs2"   : WORDtoLogicArray(0x727332)
+        "input_instr_imm" : word_t(0x696d6d).to_logicarray(),
+        "input_pc"        : word_t(0x7063).to_logicarray(),
+        "input_reg_rs1"   : word_t(0x727331).to_logicarray(),
+        "input_reg_rs2"   : word_t(0x727332).to_logicarray()
     })
     
     await set_comb(dut, {
-        "input_srcset" :  SRCSETtoLogicArray(SOURCE_SET.RS1_RS2)
-    })
-    await sample_comb(dut, samples, [("output_a", "uint"), ("output_b", "uint")])
-    
-    await set_comb(dut, {
-        "input_srcset" : SRCSETtoLogicArray(SOURCE_SET.RS1_IMM)
+        "input_srcset" :  source_set_e(SOURCE_SET.RS1_RS2).to_logicarray()
     })
     await sample_comb(dut, samples, [("output_a", "uint"), ("output_b", "uint")])
     
     await set_comb(dut, {
-        "input_srcset" : SRCSETtoLogicArray(SOURCE_SET.PC_IMM)
+        "input_srcset" : source_set_e(SOURCE_SET.RS1_IMM).to_logicarray()
     })
     await sample_comb(dut, samples, [("output_a", "uint"), ("output_b", "uint")])
     
     await set_comb(dut, {
-        "input_srcset" : SRCSETtoLogicArray(SOURCE_SET.INVALID_0)
+        "input_srcset" : source_set_e(SOURCE_SET.PC_IMM).to_logicarray()
+    })
+    await sample_comb(dut, samples, [("output_a", "uint"), ("output_b", "uint")])
+    
+    await set_comb(dut, {
+        "input_srcset" : source_set_e(SOURCE_SET.INVALID_0).to_logicarray()
     })
     await sample_comb(dut, samples, [("output_a", "uint"), ("output_b", "uint")])
     

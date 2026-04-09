@@ -2,6 +2,7 @@ from cocotb.types import LogicArray, Logic, Range
 from cocotb.triggers import RisingEdge, FallingEdge, ReadOnly, ReadWrite, Timer
 from aenum import IntEnum, NoAlias
 from typing import Literal
+from bitint import Bitint
 
 TYPE_WORD_T = Range(31, 'downto', 0)
 TYPE_REGREF_T = Range(4, 'downto', 0)
@@ -93,22 +94,36 @@ class SOURCE_SET(IntEnum):
     PC_IMM =  0b01
     INVALID_0 = 0b00
     
-def ALUOPtoLogicArray(aluop: ALU_OPERATION | int):
-    return LogicArray.from_unsigned(aluop, TYPE_ALU_OP_E)
-def RESROUTEtoLogicArray(rroute: RESULT_ROUTE | int):
-    return LogicArray.from_unsigned(rroute, TYPE_RESULT_ROUTE_E)
-def BRAOPtoLogicArray(braop: BRANCH_OPERATION | int):
-    return LogicArray.from_unsigned(braop, TYPE_BRANCH_OP_E)
-def SRCSETtoLogicArray(srcset: SOURCE_SET | int):
-    return LogicArray.from_unsigned(srcset, TYPE_SOURCE_SET_E)
-def REGtoLogicArray(reg : REG | int):
-    return LogicArray.from_unsigned(reg, TYPE_REGREF_T)
-def WORDtoLogicArray(word: int):
-    return LogicArray.from_signed(word, TYPE_WORD_T)
-def UWORDtoLogicArray(uword: int):
-    return LogicArray.from_unsigned(uword, TYPE_WORD_T)
-def ALUREStoLogicArray(alures: int):
-    return LogicArray.from_signed(alures, TYPE_ALURES_T)
+def in_unsigned_bits(value: int, bits: int) -> bool:
+    """Checks if a number is a valid `bits`-bit unsigned number
+    
+    :param value: The number to check.
+    :param bits: The number of bits `value` must fit in as an unsigned number.
+    :returns: Whether the number is representable as a `bits`-bit unsigned number.
+    """
+    
+    if value < 0:
+        return False
+    elif value >= 2**bits:
+        return False
+    else:
+        return True
+
+def in_signed_bits(value: int, bits: int) -> bool:
+    """Checks if a number is a valid `bits`-bit signed number
+    
+    :param value: The number to check.
+    :param bits: The number of bits `value` must fit in as a signed number.
+    :returns: Whether the number is representable as a `bits`-bit signed number using 2's complement
+    """
+    
+    if value < (-(2**(bits - 1))):
+        return False
+    elif value > (2**(bits-1) - 1):
+        return False
+    else:
+        return True
+
 
 async def sample_sync(dut, clock, sampleArray: list[dict[str, object]], values: list[tuple[str, Literal["int", "uint", "unknown"]]]):
     """Samples values when they will have settled after the next clock pulse."""
@@ -154,3 +169,31 @@ async def set_comb(dut, values: dict[str, object]):
     await ReadWrite()
     for (k, v) in values.items():
         dut[k].value = v
+        
+class word_t(Bitint):
+    def __init__(self, pyint: int):
+        super().__init__(pyint, 32, True)
+
+class regref_t(Bitint):
+    def __init__(self, pyint: int | REG):
+        super().__init__(int(pyint), 5, False)
+        
+class alures_t(Bitint):
+    def __init__(self, pyint: int):
+        super().__init__(pyint, 33, True)
+        
+class alu_op_e(Bitint):
+    def __init__(self, pyint: int | ALU_OPERATION):
+        super().__init__(int(pyint), 4, False)
+
+class source_set_e(Bitint):
+    def __init__(self, pyint: int | SOURCE_SET):
+        super().__init__(int(pyint), 2, False)
+        
+class result_route_e(Bitint):
+    def __init__(self, pyint: int | RESULT_ROUTE):
+        super().__init__(int(pyint), 2, False)
+        
+class branch_op_e(Bitint):
+    def __init__(self, pyint: int | BRANCH_OPERATION):
+        super().__init__(int(pyint), 3, False)
