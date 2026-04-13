@@ -94,6 +94,17 @@ class SOURCE_SET(IntEnum):
     PC_IMM =  0b01
     INVALID_0 = 0b00
     
+# typedef enum logic[2:0] { ... } mem_access_size_e
+class MEMORY_SIZE(IntEnum):
+    S8  = 0b000
+    S16 = 0b001
+    S32 = 0b010
+    INVALID_3 = 0b011
+    U8  = 0b100
+    U16 = 0b101
+    INVALID_6 = 0b110
+    NONE = 0b111
+        
 def in_unsigned_bits(value: int, bits: int) -> bool:
     """Checks if a number is a valid `bits`-bit unsigned number
     
@@ -196,4 +207,8 @@ class result_route_e(Bitint):
         
 class branch_op_e(Bitint):
     def __init__(self, pyint: int | BRANCH_OPERATION):
+        super().__init__(int(pyint), 3, False)
+        
+class mem_access_size_e(Bitint):
+    def __init__(self, pyint: int | MEMORY_SIZE):
         super().__init__(int(pyint), 3, False)

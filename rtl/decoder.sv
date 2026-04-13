@@ -17,6 +17,7 @@ function automatic types::instruction_t decode_r(types::raw_instruction_t raw);
         default: res.alu_operation = alu_op_e'({ 1'b0, raw.fields.r.funct3 });
     endcase
     
+    res.mem_acc_size = types::MEMSIZE_NONE;
     res.branch_operation = types::BRANCH_NOBRANCH;
     res.result_route = types::RROUTE_ALU_RD;
     res.data_sources = types::SRCSET_RS1_RS2;
@@ -29,6 +30,7 @@ endfunction
 
 function automatic types::instruction_t decode_i_maths(types::raw_instruction_t raw);
     types::instruction_t res;
+    res.mem_acc_size = types::MEMSIZE_NONE;
     res.branch_operation = types::BRANCH_NOBRANCH;
     res.result_route = types::RROUTE_ALU_RD;
     res.alu_operation = alu_op_e'({ (raw.fields.i.imm[11:5] == 7'h20 && raw.fields.i.funct3 == 3'h5), raw.fields.i.funct3 });
@@ -43,6 +45,7 @@ endfunction
 
 function automatic types::instruction_t decode_i_load(types::raw_instruction_t raw);
     types::instruction_t res;
+    res.mem_acc_size = types::mem_access_size_e'(raw.fields.i.funct3);
     res.branch_operation = types::BRANCH_NOBRANCH;
     res.result_route = types::RROUTE_ALU_MEMREAD_RD;
     res.alu_operation = types::ALU_ADD;
@@ -56,6 +59,7 @@ endfunction
 
 function automatic types::instruction_t decode_s(types::raw_instruction_t raw);
     types::instruction_t res;
+    res.mem_acc_size = types::mem_access_size_e'(raw.fields.s.funct3);
     res.branch_operation = types::BRANCH_NOBRANCH;
     res.result_route = types::RROUTE_ALU_MEMWRITE;
     res.alu_operation = types::ALU_ADD;
@@ -80,6 +84,7 @@ function automatic types::instruction_t decode_b(types::raw_instruction_t raw);
         7: begin aluop = types::ALU_SLTU; braop = types::BRANCH_OFFSET_ZERO; end
         default: begin aluop = types::ALU_ADD; braop = types::BRANCH_NOBRANCH; end// If we've not got a reaonable comparison, default to noop
     endcase
+    res.mem_acc_size = types::MEMSIZE_NONE;
     res.branch_operation = braop;
     res.result_route = types::RROUTE_ALU_RD;
     res.alu_operation = aluop;
@@ -93,6 +98,7 @@ endfunction
 
 function automatic types::instruction_t decode_j(types::raw_instruction_t raw);
     types::instruction_t res;
+    res.mem_acc_size = types::MEMSIZE_NONE;
     res.branch_operation = types::BRANCH_OFFSET_ALWAYS;
     res.result_route = types::RROUTE_PC_RD_ALU_PC;
     res.alu_operation = types::ALU_ADD;
@@ -106,6 +112,7 @@ endfunction
 
 function automatic types::instruction_t decode_i_jalr(types::raw_instruction_t raw);
     types::instruction_t res;
+    res.mem_acc_size = types::MEMSIZE_NONE;
     res.branch_operation = types::BRANCH_ABSOLUTE;
     res.result_route = types::RROUTE_PC_RD_ALU_PC;
     res.alu_operation = types::ALU_ADD;
@@ -119,6 +126,7 @@ endfunction
     
 function automatic types::instruction_t decode_u_lui(types::raw_instruction_t raw);
     types::instruction_t res;
+    res.mem_acc_size = types::MEMSIZE_NONE;
     res.branch_operation = types::BRANCH_NOBRANCH;
     res.result_route = types::RROUTE_ALU_RD;
     res.alu_operation = types::ALU_ADD;
@@ -132,6 +140,7 @@ endfunction
 
 function automatic types::instruction_t decode_u_auipc(types::raw_instruction_t raw);
     types::instruction_t res;
+    res.mem_acc_size = types::MEMSIZE_NONE;
     res.branch_operation = types::BRANCH_NOBRANCH;
     res.result_route = types::RROUTE_ALU_RD;
     res.alu_operation = types::ALU_ADD;
@@ -145,6 +154,7 @@ endfunction
 
 function automatic types::instruction_t decode_invalid(types::raw_instruction_t raw);
     types::instruction_t res;
+    res.mem_acc_size = types::MEMSIZE_NONE;
     res.branch_operation = types::BRANCH_NOBRANCH;
     res.result_route = types::RROUTE_ALU_RD;
     res.alu_operation = types::ALU_ADD;

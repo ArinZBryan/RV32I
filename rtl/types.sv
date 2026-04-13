@@ -67,8 +67,8 @@ package types;
     typedef enum logic[2:0] {
         BRANCH_NOBRANCH       = 0, 
         BRANCH_OFFSET_ZERO    = 1,
-        BRANCH_OFFSET_NZERO   = 2, 
-        BRANCH_OFFSET_ALWAYS  = 3, 
+        BRANCH_OFFSET_NZERO   = 2,
+        BRANCH_OFFSET_ALWAYS  = 3,
         BRANCH_ABSOLUTE       = 4 
     } branch_op_e;
 
@@ -78,7 +78,17 @@ package types;
         SRCSET_PC_IMM  = 2'b01
     } source_set_e;
 
+    typedef enum logic[2:0] {
+        MEMSIZE_S8  = 3'b000,
+        MEMSIZE_S16 = 3'b001,
+        MEMSIZE_S32 = 3'b010,
+        MEMSIZE_U8  = 3'b100,
+        MEMSIZE_U16 = 3'b101,
+        MEMSIZE_NONE = 3'b111
+    } mem_access_size_e;
+
     typedef struct packed {
+        mem_access_size_e mem_acc_size;
         branch_op_e branch_operation;   
         result_route_e result_route;    
         alu_op_e alu_operation;         

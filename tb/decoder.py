@@ -196,7 +196,7 @@ class raw_instruction(LogicArray):
 
 class instruction(LogicArray):
     def __init__(self, value: Union[int, str, Iterable[Union[Union[str, int, bool], "Logic"]]]):
-        super().__init__(value, Range(57, 'downto', 0))
+        super().__init__(value, Range(60, 'downto', 0))
     
     @staticmethod
     def create( 
@@ -204,24 +204,27 @@ class instruction(LogicArray):
         rs2 : REG | int = REG.zero,                                     #  5 +  5 = 10
         imm : int = 0,                                                  # 10 + 32 = 42
         dst : REG | int = REG.zero,                                     # 42 +  5 = 47
-        srcs : SOURCE_SET | int = SOURCE_SET.RS1_RS2,                   # 47 +  3 = 50
-        alu_op : ALU_OPERATION | int = ALU_OPERATION.ADD,               # 50 +  5 = 55
-        res_route : RESULT_ROUTE | int = RESULT_ROUTE.ALU_RD, # 55 +  2 = 57
-        bra_op: BRANCH_OPERATION | int = BRANCH_OPERATION.NOBRANCH      # 57 +  3 = 60
+        srcs : SOURCE_SET | int = SOURCE_SET.RS1_RS2,                   # 47 +  2 = 49
+        alu_op : ALU_OPERATION | int = ALU_OPERATION.ADD,               # 49 +  4 = 53
+        res_route : RESULT_ROUTE | int = RESULT_ROUTE.ALU_RD,           # 53 +  2 = 55
+        bra_op: BRANCH_OPERATION | int = BRANCH_OPERATION.NOBRANCH,     # 55 +  3 = 58
+        mem_acc_sz: MEMORY_SIZE | int = MEMORY_SIZE.NONE                # 58 +  3 = 61
     ):
         return instruction(
-            (bra_op & 0b111)   << 55 |
-            (res_route & 0b11) << 53 |
-            (alu_op & 0b11111) << 49 |
-            (srcs & 0b111)     << 47 |
-            (dst & 0b11111)    << 42 |
-            (imm & 0xffffffff) << 10 |
-            (rs2 & 0b11111)    << 5  |
+            (mem_acc_sz & 0b111) << 58 |
+            (bra_op & 0b111)     << 55 |
+            (res_route & 0b11)   << 53 |
+            (alu_op & 0b11111)   << 49 |
+            (srcs & 0b111)       << 47 |
+            (dst & 0b11111)      << 42 |
+            (imm & 0xffffffff)   << 10 |
+            (rs2 & 0b11111)      << 5  |
             (rs1 & 0b11111), 
         )
     
     def to_str(self):
         return str({
+            "mem_acc_sz" : self.mem_acc_sz,
             "bra_op" : self.bra_op,
             "res_route" : self.res_route,
             "alu_op" : self.alu_op,
@@ -256,6 +259,9 @@ class instruction(LogicArray):
     @property
     def bra_op(self) -> BRANCH_OPERATION:
         return BRANCH_OPERATION(int(self[57:55]))
+    @property
+    def mem_acc_sz(self) -> MEMORY_SIZE:
+        return MEMORY_SIZE(int(self[60:58]))
     
 def decode(instr: raw_instruction) -> instruction:
     """
@@ -282,7 +288,8 @@ def decode(instr: raw_instruction) -> instruction:
                     (0b1000 if instr[31:25] == 0x20 else 0) # use ALU_SUB or ALU_ASHR if needed
                 ),
                 res_route = RESULT_ROUTE.ALU_RD,
-                bra_op = BRANCH_OPERATION.NOBRANCH
+                bra_op = BRANCH_OPERATION.NOBRANCH,
+                mem_acc_sz = MEMORY_SIZE.NONE
             )
         case 0b0010011: # i-type maths
             return instruction.create(
@@ -293,7 +300,8 @@ def decode(instr: raw_instruction) -> instruction:
                 srcs = SOURCE_SET.RS1_IMM,
                 alu_op = ALU_OPERATION(int(instr[14:12]) + (0b1000 if (instr[31:25] == 0x20 and instr[14:12] == 0x5) else 0)),
                 res_route = RESULT_ROUTE.ALU_RD,
-                bra_op = BRANCH_OPERATION.NOBRANCH
+                bra_op = BRANCH_OPERATION.NOBRANCH,
+                mem_acc_sz = MEMORY_SIZE.NONE
             ) 
         case 0b0000011: # i-type loads
             return instruction.create(
@@ -304,7 +312,8 @@ def decode(instr: raw_instruction) -> instruction:
                 srcs = SOURCE_SET.RS1_IMM,
                 alu_op = ALU_OPERATION.ADD,
                 res_route = RESULT_ROUTE.ALU_MEMREAD_RD,
-                bra_op = BRANCH_OPERATION.NOBRANCH
+                bra_op = BRANCH_OPERATION.NOBRANCH,
+                mem_acc_sz = MEMORY_SIZE(int(instr[14:12]))
             ) 
         case 0b0100011: # s-type
             return instruction.create(
@@ -315,7 +324,8 @@ def decode(instr: raw_instruction) -> instruction:
                 srcs = SOURCE_SET.RS1_IMM,
                 alu_op = ALU_OPERATION.ADD,
                 res_route = RESULT_ROUTE.ALU_MEMWRITE,
-                bra_op = BRANCH_OPERATION.NOBRANCH
+                bra_op = BRANCH_OPERATION.NOBRANCH,
+                mem_acc_sz = MEMORY_SIZE(int(instr[14:12]))
             )
         case 0b1100011: # b-type
             aluop = ALU_OPERATION.ADD
@@ -337,7 +347,8 @@ def decode(instr: raw_instruction) -> instruction:
                 srcs = SOURCE_SET.RS1_RS2,
                 alu_op = aluop,
                 res_route = RESULT_ROUTE.ALU_RD,
-                bra_op = braop
+                bra_op = braop,
+                mem_acc_sz = MEMORY_SIZE.NONE
             ) 
         case 0b1101111: # j-type JAL
             return instruction.create(
@@ -348,7 +359,8 @@ def decode(instr: raw_instruction) -> instruction:
                 srcs = SOURCE_SET.RS1_RS2,
                 alu_op = ALU_OPERATION.ADD,
                 res_route = RESULT_ROUTE.PC_RD_ALU_PC,
-                bra_op = BRANCH_OPERATION.OFFSET_ALWAYS
+                bra_op = BRANCH_OPERATION.OFFSET_ALWAYS,
+                mem_acc_sz = MEMORY_SIZE.NONE
             ) 
         case 0b1100111: # i-type JALR
             return instruction.create(
@@ -359,7 +371,8 @@ def decode(instr: raw_instruction) -> instruction:
                 srcs = SOURCE_SET.RS1_IMM,
                 alu_op = ALU_OPERATION.ADD,
                 res_route = RESULT_ROUTE.PC_RD_ALU_PC,
-                bra_op = BRANCH_OPERATION.ABSOLUTE_ALU
+                bra_op = BRANCH_OPERATION.ABSOLUTE_ALU,
+                mem_acc_sz = MEMORY_SIZE.NONE
             )
         case 0b0110111: # u-type LUI
             return instruction.create(
@@ -370,7 +383,8 @@ def decode(instr: raw_instruction) -> instruction:
                 srcs = SOURCE_SET.RS1_IMM,
                 alu_op = ALU_OPERATION.ADD,
                 res_route = RESULT_ROUTE.ALU_RD,
-                bra_op = BRANCH_OPERATION.NOBRANCH
+                bra_op = BRANCH_OPERATION.NOBRANCH,
+                mem_acc_sz = MEMORY_SIZE.NONE
             )
         case 0b0010111: # u-type auipc
             return instruction.create(
@@ -381,7 +395,8 @@ def decode(instr: raw_instruction) -> instruction:
                 srcs = SOURCE_SET.PC_IMM,
                 alu_op = ALU_OPERATION.ADD,
                 res_route = RESULT_ROUTE.ALU_RD,
-                bra_op = BRANCH_OPERATION.NOBRANCH
+                bra_op = BRANCH_OPERATION.NOBRANCH,
+                mem_acc_sz = MEMORY_SIZE.NONE
             )
         case _: return instruction.create() # unsupported -> NOP
 
