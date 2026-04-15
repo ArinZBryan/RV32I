@@ -2,6 +2,7 @@ package types;
     typedef logic [4:0] regref_t;
     typedef logic [31:0] word_t;
     typedef logic [32:0] alu_res_t;
+    typedef logic [3:0] byte_select_t;
 
     typedef struct packed {
         union packed {

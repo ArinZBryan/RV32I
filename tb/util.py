@@ -184,31 +184,192 @@ async def set_comb(dut, values: dict[str, object]):
 class word_t(Bitint):
     def __init__(self, pyint: int):
         super().__init__(pyint, 32, True)
+    
+    @staticmethod
+    def representable(pyint: int):
+        return Bitint.representable(pyint, 32, True)
+    
+    @staticmethod
+    def maxvalue() -> int:
+        return Bitint.maxvalue(32, True)
+    
+    @staticmethod
+    def minvalue() -> int:
+        return Bitint.minvalue(32, True)
+
+class uword_t(Bitint):
+    def __init__(self, pyint: int):
+        super().__init__(pyint, 32, False)
+    
+    @staticmethod
+    def representable(pyint: int):
+        return Bitint.representable(pyint, 32, False)
+    
+    @staticmethod
+    def maxvalue() -> int:
+        return Bitint.maxvalue(32, False)
+    
+    @staticmethod
+    def minvalue() -> int:
+        return Bitint.minvalue(32, False)
 
 class regref_t(Bitint):
     def __init__(self, pyint: int | REG):
         super().__init__(int(pyint), 5, False)
+    
+    @staticmethod
+    def representable(pyint: int):
+        return Bitint.representable(pyint, 5, False)
+    
+    @staticmethod
+    def maxvalue() -> int:
+        return Bitint.maxvalue(5, False)
+    
+    @staticmethod
+    def minvalue() -> int:
+        return Bitint.minvalue(5, False)
         
 class alures_t(Bitint):
     def __init__(self, pyint: int):
         super().__init__(pyint, 33, True)
+    
+    @staticmethod
+    def representable(pyint: int):
+        return Bitint.representable(pyint, 33, True)
+    
+    @staticmethod
+    def maxvalue() -> int:
+        return Bitint.maxvalue(33, True)
+    
+    @staticmethod
+    def minvalue() -> int:
+        return Bitint.minvalue(33, True)
         
 class alu_op_e(Bitint):
     def __init__(self, pyint: int | ALU_OPERATION):
         super().__init__(int(pyint), 4, False)
+    
+    @staticmethod
+    def representable(pyint: int):
+        return Bitint.representable(pyint, 4, False)
+    
+    @staticmethod
+    def maxvalue() -> int:
+        return Bitint.maxvalue(4, False)
+    
+    @staticmethod
+    def minvalue() -> int:
+        return Bitint.minvalue(4, False)
 
 class source_set_e(Bitint):
     def __init__(self, pyint: int | SOURCE_SET):
         super().__init__(int(pyint), 2, False)
+    
+    @staticmethod
+    def representable(pyint: int):
+        return Bitint.representable(pyint, 2, False)
+    
+    @staticmethod
+    def maxvalue() -> int:
+        return Bitint.maxvalue(2, False)
+    
+    @staticmethod
+    def minvalue() -> int:
+        return Bitint.minvalue(2, False)
         
 class result_route_e(Bitint):
     def __init__(self, pyint: int | RESULT_ROUTE):
         super().__init__(int(pyint), 2, False)
         
+    @staticmethod
+    def representable(pyint: int):
+        return Bitint.representable(pyint, 2, False)
+    
+    @staticmethod
+    def maxvalue() -> int:
+        return Bitint.maxvalue(2, False)
+    
+    @staticmethod
+    def minvalue() -> int:
+        return Bitint.minvalue(2, False)
+        
 class branch_op_e(Bitint):
     def __init__(self, pyint: int | BRANCH_OPERATION):
         super().__init__(int(pyint), 3, False)
         
+    @staticmethod
+    def representable(pyint: int):
+        return Bitint.representable(pyint, 3, False)
+    
+    @staticmethod
+    def maxvalue() -> int:
+        return Bitint.maxvalue(3, False)
+    
+    @staticmethod
+    def minvalue() -> int:
+        return Bitint.minvalue(3, False)
+        
 class mem_access_size_e(Bitint):
     def __init__(self, pyint: int | MEMORY_SIZE):
         super().__init__(int(pyint), 3, False)
+        
+    @staticmethod
+    def representable(pyint: int):
+        return Bitint.representable(pyint, 3, False)
+    
+    @staticmethod
+    def maxvalue() -> int:
+        return Bitint.maxvalue(3, False)
+    
+    @staticmethod
+    def minvalue() -> int:
+        return Bitint.minvalue(3, False)
+
+class byte_select_t(Bitint):
+    def __init__(self, pyint: int):
+        super().__init__(int(pyint), 4, False)
+    
+    @staticmethod
+    def representable(pyint: int):
+        return Bitint.representable(pyint, 4, False)
+
+    @staticmethod
+    def maxvalue() -> int:
+        return Bitint.maxvalue(4, False)
+    
+    @staticmethod
+    def minvalue() -> int:
+        return Bitint.minvalue(4, False)
+   
+def coerce_to_u32_bits(v: int | uword_t | word_t) -> uword_t:
+    if isinstance(v, int):
+        if uword_t.representable(v):
+            return uword_t(v)
+        elif word_t.representable(v):
+            return uword_t(word_t(v).to_unsigned())
+        else:
+            raise ArithmeticError(f"Cannot coerce value {v} to 32-bit signed/unsigned integer")
+    elif isinstance(v, Bitint):
+        return uword_t(v.to_unsigned())
+    else:
+        raise ValueError("val_a not of integer type")
+
+def coerce_to_s32_bits(v: int | uword_t | word_t) -> word_t:
+    if isinstance(v, int):
+        if word_t.representable(v):
+            return word_t(v)
+        elif uword_t.representable(v):
+            return word_t(uword_t(v).to_unsigned())
+        else:
+            raise ArithmeticError(f"Cannot coerce value {v} to 32-bit signed/unsigned integer")
+    elif isinstance(v, Bitint):
+        return word_t(v.to_signed())
+    else:
+        raise ValueError("val_a not of integer type")
+   
+def readmemb(path : str):
+    file = open(path, "rb")
+    file_bytes = file.read()
+    res = [LogicArray(b, Range(7, 'downto', 0)) for b in file_bytes]
+    file.close()
+    return res

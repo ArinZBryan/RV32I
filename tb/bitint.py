@@ -3,7 +3,7 @@ from cocotb.types import LogicArray, Range
 class Bitint():
     def __init__(self, pyint: int, nbits: int, signed: bool):
         if not Bitint.representable(pyint, nbits, signed):
-            raise ArithmeticError("Number not representable in the specified format")
+            raise ArithmeticError(f"Number ({pyint}) not representable in the specified format {"s" if signed else "u"}{nbits}")
         self.signed = signed
         self.size = nbits
         self.signbitmask = 1 << (nbits - 1)
@@ -155,13 +155,7 @@ class Bitint():
     
     def __hash__(self) -> int:
         return hash((self.bits, self.size, self.signed))
-    
-    @staticmethod
-    def safe_coerce(pyint: int, nbits: int, signed: bool) -> "Bitint":
-        if not Bitint.representable(pyint, nbits, signed):
-            raise ArithmeticError("Number not representable in the specified format")
-        return Bitint._coerce(pyint, nbits, signed)
-    
+        
     @staticmethod
     def _coerce(pyint: int, nbits: int, signed: bool) -> "Bitint":
         new_item = Bitint.__new__(Bitint)

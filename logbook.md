@@ -82,3 +82,13 @@ Von Neumann is probably better to go with for the time being. Worst case, I crea
 - added it to `util.py` and `types.sv`
 - todo: figure out what all the bit offsets are and finish adding it to decoder.py and decoder.sv DONE
 ![new_decoded_instruction](new_decoded_instruction.png)
+
+- Generated [memory test file](./tb/65536_random_bytes.bin) using [pinetools random file generator](https://pinetools.com/random-file-generator)
+
+# 14.04.26
+- Written new memory.sv and tests/
+- Originally took some inspiration from program ram in AICE1002 CPU, but that was read-only. This allowed that ram to have an 'injectable' version that was easy to test, but because this memory is read/write (as it is a von-neumann architecture), that's not really doable without 'inout' ports, which seems to just add a whole lot of complexity
+- Luckily, verilator + cocotb lets you manually inspect and assign values to internal variables without any kind of protection, so I can just set/read the memory directly, rather than relying on a port that mirrors it.
+- Spent ages chasing down _so many_ small bugs in the python code, as usual the systemverilog was fine. It _is_ built for that, so I guess that's no suprise compared to the more complex python implementations.
+- Also introduced new 4-bit type for use as byte-write select. It could have been 2-bits, but I thought it neater to map one bit to one byte rather than using an enum.
+- Also, also updated the Bitint aliases to allow for them to have versions of Bitint's static methods that respected the underlying size/signed-ness of the aliased type. 
