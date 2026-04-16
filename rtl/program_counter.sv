@@ -5,8 +5,10 @@ module program_counter #(
 ) (
     input logic Clk, _Reset,
     input types::word_t PC_branch_to,
-    output types::word_t PC
+    output types::word_t PC, PC_next
 );
+
+assign PC_next = PC + 4;
 
 always_ff @(posedge Clk, negedge _Reset) begin
     if (~_Reset) PC <= RESET_ADDR;

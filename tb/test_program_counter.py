@@ -26,18 +26,23 @@ async def test_program_counter(dut):
     
     samples = []
     
-    await sample_sync(dut, dut.Clk, samples, [("PC", "uint")])
+    await sample_sync(dut, dut.Clk, samples, [("PC", "uint"), ("PC_next", "uint")])
     
     await set_sync(dut, dut.Clk, {"PC_branch_to": word_t(0x4000).to_logicarray()})
-    await sample_sync(dut, dut.Clk, samples, [("PC", "uint")])
+    await sample_sync(dut, dut.Clk, samples, [("PC", "uint"), ("PC_next", "uint")])
     
     await set_sync(dut, dut.Clk, {"PC_branch_to": word_t(0x8000).to_logicarray()})
-    await sample_sync(dut, dut.Clk, samples, [("PC", "uint")])
+    await sample_sync(dut, dut.Clk, samples, [("PC", "uint"), ("PC_next", "uint")])
     
     await set_sync(dut, dut.Clk, {"PC_branch_to": word_t(0x5000).to_logicarray()})
-    await sample_sync(dut, dut.Clk, samples, [("PC", "uint")])
+    await sample_sync(dut, dut.Clk, samples, [("PC", "uint"), ("PC_next", "uint")])
     
-    assert samples == [{"PC":0}, {"PC":0x4000}, {"PC":0x8000}, {"PC":0x5000}]
+    assert samples == [
+        {"PC":0, "PC_next":4}, 
+        {"PC":0x4000, "PC_next":0x4004}, 
+        {"PC":0x8000, "PC_next":0x8004}, 
+        {"PC":0x5000, "PC_next":0x5004}
+    ]
     
 def test_program_counter_runner():
     sim = "verilator"

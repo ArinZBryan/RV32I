@@ -62,15 +62,14 @@ package types;
         RROUTE_ALU_RD         = 0,
         RROUTE_ALU_MEMREAD_RD = 1,
         RROUTE_ALU_MEMWRITE   = 2,
-        RROUTE_PC_RD_ALU_PC   = 3
+        RROUTE_PC_RD          = 3
     } result_route_e;
 
-    typedef enum logic[2:0] {
+    typedef enum logic[1:0] {
         BRANCH_NOBRANCH       = 0, 
         BRANCH_OFFSET_ZERO    = 1,
         BRANCH_OFFSET_NZERO   = 2,
-        BRANCH_OFFSET_ALWAYS  = 3,
-        BRANCH_ABSOLUTE       = 4 
+        BRANCH_ALU            = 3 
     } branch_op_e;
 
     typedef enum logic[1:0] {

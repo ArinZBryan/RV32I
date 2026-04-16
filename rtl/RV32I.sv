@@ -11,6 +11,7 @@ types::raw_instruction_t raw_instruction;
 // Program Counter Signals
 types::word_t pc_branch_to;
 types::word_t pc;
+types::word_t pc_next;
 
 // Register File Signals
 types::regref_t rs1, rs2;
@@ -23,7 +24,8 @@ program_counter module_pc (
     .Clk(Clk), 
     ._Reset(Reset), 
     .PC_branch_to(pc_branch_to), 
-    .PC(pc)
+    .PC(pc),
+    .PC_next(pc_next)
 );
 
 decoder module_decoder (

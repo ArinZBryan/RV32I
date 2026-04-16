@@ -74,18 +74,14 @@ class RESULT_ROUTE(IntEnum):
     ALU_RD = 0
     ALU_MEMREAD_RD = 1
     ALU_MEMWRITE = 2
-    PC_RD_ALU_PC = 3
+    PC_RD = 3
 
-# typedef enum logic[2:0] { ... } bra_op_t
+# typedef enum logic[1:0] { ... } bra_op_t
 class BRANCH_OPERATION(IntEnum):
     NOBRANCH = 0
     OFFSET_ZERO = 1
     OFFSET_NZERO = 2
-    OFFSET_ALWAYS = 3
-    ABSOLUTE_ALU = 4
-    INVALID_5 = 5
-    INVALID_6 = 6
-    INVALID_7 = 7
+    ALU = 3
 
 # typedef enum logic[1:0] { ... } src_set_t
 class SOURCE_SET(IntEnum):
@@ -295,11 +291,11 @@ class result_route_e(Bitint):
         
 class branch_op_e(Bitint):
     def __init__(self, pyint: int | BRANCH_OPERATION):
-        super().__init__(int(pyint), 3, False)
+        super().__init__(int(pyint), 2, False)
         
     @staticmethod
     def representable(pyint: int):
-        return Bitint.representable(pyint, 3, False)
+        return Bitint.representable(pyint, 2, False)
     
     @staticmethod
     def maxvalue() -> int:

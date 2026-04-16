@@ -196,7 +196,7 @@ class raw_instruction(LogicArray):
 
 class instruction(LogicArray):
     def __init__(self, value: Union[int, str, Iterable[Union[Union[str, int, bool], "Logic"]]]):
-        super().__init__(value, Range(60, 'downto', 0))
+        super().__init__(value, Range(59, 'downto', 0))
     
     @staticmethod
     def create( 
@@ -207,12 +207,12 @@ class instruction(LogicArray):
         srcs : SOURCE_SET | int = SOURCE_SET.RS1_RS2,                   # 47 +  2 = 49
         alu_op : ALU_OPERATION | int = ALU_OPERATION.ADD,               # 49 +  4 = 53
         res_route : RESULT_ROUTE | int = RESULT_ROUTE.ALU_RD,           # 53 +  2 = 55
-        bra_op: BRANCH_OPERATION | int = BRANCH_OPERATION.NOBRANCH,     # 55 +  3 = 58
-        mem_acc_sz: MEMORY_SIZE | int = MEMORY_SIZE.NONE                # 58 +  3 = 61
+        bra_op: BRANCH_OPERATION | int = BRANCH_OPERATION.NOBRANCH,     # 55 +  2 = 57
+        mem_acc_sz: MEMORY_SIZE | int = MEMORY_SIZE.NONE                # 57 +  3 = 60
     ):
         return instruction(
-            (mem_acc_sz & 0b111) << 58 |
-            (bra_op & 0b111)     << 55 |
+            (mem_acc_sz & 0b111) << 57 |
+            (bra_op & 0b11)      << 55 |
             (res_route & 0b11)   << 53 |
             (alu_op & 0b11111)   << 49 |
             (srcs & 0b111)       << 47 |
@@ -258,10 +258,10 @@ class instruction(LogicArray):
         return RESULT_ROUTE(int(self[54:53]))
     @property
     def bra_op(self) -> BRANCH_OPERATION:
-        return BRANCH_OPERATION(int(self[57:55]))
+        return BRANCH_OPERATION(int(self[56:55]))
     @property
     def mem_acc_sz(self) -> MEMORY_SIZE:
-        return MEMORY_SIZE(int(self[60:58]))
+        return MEMORY_SIZE(int(self[59:57]))
     
 def decode(instr: raw_instruction) -> instruction:
     """
@@ -356,10 +356,10 @@ def decode(instr: raw_instruction) -> instruction:
                 rs2 = REG.zero,
                 imm = int(instr[30:21]) << 1 | int(instr[20]) << 11 | int(instr[19:12]) << 12 | int(instr[31]) << 20,
                 dst = REG(int(instr[11:7])),
-                srcs = SOURCE_SET.RS1_RS2,
+                srcs = SOURCE_SET.PC_IMM,
                 alu_op = ALU_OPERATION.ADD,
-                res_route = RESULT_ROUTE.PC_RD_ALU_PC,
-                bra_op = BRANCH_OPERATION.OFFSET_ALWAYS,
+                res_route = RESULT_ROUTE.PC_RD,
+                bra_op = BRANCH_OPERATION.ALU,
                 mem_acc_sz = MEMORY_SIZE.NONE
             ) 
         case 0b1100111: # i-type JALR
@@ -370,8 +370,8 @@ def decode(instr: raw_instruction) -> instruction:
                 dst = REG(int(instr[11:7])),
                 srcs = SOURCE_SET.RS1_IMM,
                 alu_op = ALU_OPERATION.ADD,
-                res_route = RESULT_ROUTE.PC_RD_ALU_PC,
-                bra_op = BRANCH_OPERATION.ABSOLUTE_ALU,
+                res_route = RESULT_ROUTE.PC_RD,
+                bra_op = BRANCH_OPERATION.ALU,
                 mem_acc_sz = MEMORY_SIZE.NONE
             )
         case 0b0110111: # u-type LUI

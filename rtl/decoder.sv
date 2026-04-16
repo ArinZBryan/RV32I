@@ -99,10 +99,10 @@ endfunction
 function automatic types::instruction_t decode_j(types::raw_instruction_t raw);
     types::instruction_t res;
     res.mem_acc_size = types::MEMSIZE_NONE;
-    res.branch_operation = types::BRANCH_OFFSET_ALWAYS;
-    res.result_route = types::RROUTE_PC_RD_ALU_PC;
+    res.branch_operation = types::BRANCH_ALU;
+    res.result_route = types::RROUTE_PC_RD;
     res.alu_operation = types::ALU_ADD;
-    res.data_sources = types::SRCSET_RS1_RS2;
+    res.data_sources = types::SRCSET_PC_IMM;
     res.rd = raw.fields.j.rd;
     res.imm = { {11{raw.fields.j.imm[19]}}, raw.fields.j.imm[19], raw.fields.j.imm[7:0], raw.fields.j.imm[8], raw.fields.j.imm[18:9], 1'b0 };
     res.rs2 = '0;
@@ -113,8 +113,8 @@ endfunction
 function automatic types::instruction_t decode_i_jalr(types::raw_instruction_t raw);
     types::instruction_t res;
     res.mem_acc_size = types::MEMSIZE_NONE;
-    res.branch_operation = types::BRANCH_ABSOLUTE;
-    res.result_route = types::RROUTE_PC_RD_ALU_PC;
+    res.branch_operation = types::BRANCH_ALU;
+    res.result_route = types::RROUTE_PC_RD;
     res.alu_operation = types::ALU_ADD;
     res.data_sources = types::SRCSET_RS1_IMM;
     res.rd = raw.fields.i.rd;
