@@ -92,3 +92,7 @@ Von Neumann is probably better to go with for the time being. Worst case, I crea
 - Spent ages chasing down _so many_ small bugs in the python code, as usual the systemverilog was fine. It _is_ built for that, so I guess that's no suprise compared to the more complex python implementations.
 - Also introduced new 4-bit type for use as byte-write select. It could have been 2-bits, but I thought it neater to map one bit to one byte rather than using an enum.
 - Also, also updated the Bitint aliases to allow for them to have versions of Bitint's static methods that respected the underlying size/signed-ness of the aliased type. 
+
+# 16.04/26
+- New, more comprehensive diagram of cpu architecture including all signals
+![CPU Block Diagram](block_diagram.png)
