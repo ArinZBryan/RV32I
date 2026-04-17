@@ -93,6 +93,12 @@ Von Neumann is probably better to go with for the time being. Worst case, I crea
 - Also introduced new 4-bit type for use as byte-write select. It could have been 2-bits, but I thought it neater to map one bit to one byte rather than using an enum.
 - Also, also updated the Bitint aliases to allow for them to have versions of Bitint's static methods that respected the underlying size/signed-ness of the aliased type. 
 
-# 16.04/26
+# 16.04.26
 - New, more comprehensive diagram of cpu architecture including all signals
 ![CPU Block Diagram](block_diagram.png)
+- Renamed variable names to be inline with CPU block diagram
+- It turned out that in my decoding spreadsheet, that `BRANCH_ABSOLUTE` and `BRANCH_OFFSET_ALWAYS` pretty much did the same thing - that is, they set the PC to the value of the ALU's result. The only difference is what inputs the ALU gets - RS1+Imm vs PC+Imm, so I replaced them both with a new `BRANCH_ALU`
+- Implemented Result Mux module and tests (passing)
+- Spent far too long fixing every little piece of the new block diagram. At this point I couldn't even tell you what changes I've made since the first draft of it, other than that it's different. :/
+- Implemented a **complete** top module (`rtl/RV32I.sv`). I'm very hesistant to call it that, and feel I might be jinxing it by saying that since all the component modules pass tests and I've spent an inordinate ammount of time figuring out the exact 'wiring' while making the block diagram in excalidraw, it might be likely that _it just works_. (Begone Todd Howard, there is no 16x detail to be found here!)
+- It is 02:12AM on 17/04 by the time I am getting around to writing this, so it's time to go to bed ^-^
