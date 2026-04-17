@@ -14,11 +14,11 @@ async def init_testbench(dut):
     """
     Sets up the clock, initialises `Do_Branch` and `PC_branch_to` to 0 and brings the testbench out of reset.
     """
-    dut.Reset.value = Logic('0')
-    dut.PC_branch_to.value = LogicArray.from_signed(0, TYPE_WORD_T)
-    Clock(dut.Clk, 1, "us").start()
-    await FallingEdge(dut.Clk)
-    dut.Reset.value = Logic('1')
+    dut["_reset"].value = Logic('0')
+    dut.PC_New.value = word_t(0).to_logicarray()
+    Clock(dut.clock, 1, "us").start()
+    await FallingEdge(dut.clock)
+    dut["_reset"].value = Logic('1')
     
 @cocotb.test()
 async def test_program_counter(dut):
@@ -26,22 +26,22 @@ async def test_program_counter(dut):
     
     samples = []
     
-    await sample_sync(dut, dut.Clk, samples, [("PC", "uint"), ("PC_next", "uint")])
+    await sample_sync(dut, dut.clock, samples, [("PC_Current", "uint"), ("PC_Next", "uint")])
     
-    await set_sync(dut, dut.Clk, {"PC_branch_to": word_t(0x4000).to_logicarray()})
-    await sample_sync(dut, dut.Clk, samples, [("PC", "uint"), ("PC_next", "uint")])
+    await set_sync(dut, dut.clock, {"PC_New": word_t(0x4000).to_logicarray()})
+    await sample_sync(dut, dut.clock, samples, [("PC_Current", "uint"), ("PC_Next", "uint")])
     
-    await set_sync(dut, dut.Clk, {"PC_branch_to": word_t(0x8000).to_logicarray()})
-    await sample_sync(dut, dut.Clk, samples, [("PC", "uint"), ("PC_next", "uint")])
+    await set_sync(dut, dut.clock, {"PC_New": word_t(0x8000).to_logicarray()})
+    await sample_sync(dut, dut.clock, samples, [("PC_Current", "uint"), ("PC_Next", "uint")])
     
-    await set_sync(dut, dut.Clk, {"PC_branch_to": word_t(0x5000).to_logicarray()})
-    await sample_sync(dut, dut.Clk, samples, [("PC", "uint"), ("PC_next", "uint")])
+    await set_sync(dut, dut.clock, {"PC_New": word_t(0x5000).to_logicarray()})
+    await sample_sync(dut, dut.clock, samples, [("PC_Current", "uint"), ("PC_Next", "uint")])
     
     assert samples == [
-        {"PC":0, "PC_next":4}, 
-        {"PC":0x4000, "PC_next":0x4004}, 
-        {"PC":0x8000, "PC_next":0x8004}, 
-        {"PC":0x5000, "PC_next":0x5004}
+        {"PC_Current":0,      "PC_Next":4}, 
+        {"PC_Current":0x4000, "PC_Next":0x4004}, 
+        {"PC_Current":0x8000, "PC_Next":0x8004}, 
+        {"PC_Current":0x5000, "PC_Next":0x5004}
     ]
     
 def test_program_counter_runner():

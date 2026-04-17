@@ -16,53 +16,53 @@ async def test_branch_evaluator(dut):
     
     # Initialisation
     await set_comb(dut, {
-        "alu_result":word_t(1).to_logicarray(),
-        "pc":word_t(0).to_logicarray(),
-        "instr_imm":word_t(2).to_logicarray(),
-        "branch_type":branch_op_e(BRANCH_OPERATION.NOBRANCH).to_logicarray()
+        "Var":word_t(1).to_logicarray(),
+        "PC_Cur":word_t(0).to_logicarray(),
+        "Offset":word_t(2).to_logicarray(),
+        "Type":branch_op_e(BRANCH_OPERATION.NOBRANCH).to_logicarray()
     })
     
     # Forward Branching Tests
-    await set_comb(dut, {"branch_type":branch_op_e(BRANCH_OPERATION.NOBRANCH).to_logicarray()})
-    await sample_comb(dut, samples, [("new_pc_value", "uint")])
+    await set_comb(dut, {"Type":branch_op_e(BRANCH_OPERATION.NOBRANCH).to_logicarray()})
+    await sample_comb(dut, samples, [("PC_Result", "uint")])
     
     await set_comb(dut, {
-        "branch_type":branch_op_e(BRANCH_OPERATION.OFFSET_ZERO).to_logicarray(),
-        "alu_result":word_t(0).to_logicarray()
+        "Type":branch_op_e(BRANCH_OPERATION.OFFSET_ZERO).to_logicarray(),
+        "Var":word_t(0).to_logicarray()
     })
-    await sample_comb(dut, samples, [("new_pc_value", "uint")])
+    await sample_comb(dut, samples, [("PC_Result", "uint")])
     
     await set_comb(dut, {
-        "branch_type":branch_op_e(BRANCH_OPERATION.OFFSET_ZERO).to_logicarray(),
-        "alu_result":word_t(1).to_logicarray()
+        "Type":branch_op_e(BRANCH_OPERATION.OFFSET_ZERO).to_logicarray(),
+        "Var":word_t(1).to_logicarray()
     })
-    await sample_comb(dut, samples, [("new_pc_value", "uint")])
+    await sample_comb(dut, samples, [("PC_Result", "uint")])
     
     await set_comb(dut, {
-        "branch_type":branch_op_e(BRANCH_OPERATION.OFFSET_NZERO).to_logicarray(),
-        "alu_result":word_t(0).to_logicarray()
+        "Type":branch_op_e(BRANCH_OPERATION.OFFSET_NZERO).to_logicarray(),
+        "Var":word_t(0).to_logicarray()
     })
-    await sample_comb(dut, samples, [("new_pc_value", "uint")])
+    await sample_comb(dut, samples, [("PC_Result", "uint")])
     
     await set_comb(dut, {
-        "branch_type":branch_op_e(BRANCH_OPERATION.OFFSET_NZERO).to_logicarray(),
-        "alu_result":word_t(1).to_logicarray()
+        "Type":branch_op_e(BRANCH_OPERATION.OFFSET_NZERO).to_logicarray(),
+        "Var":word_t(1).to_logicarray()
     })
-    await sample_comb(dut, samples, [("new_pc_value", "uint")])
+    await sample_comb(dut, samples, [("PC_Result", "uint")])
     
     await set_comb(dut, {
-        "branch_type":branch_op_e(BRANCH_OPERATION.ALU).to_logicarray(),
-        "alu_result":word_t(0).to_logicarray()
+        "Type":branch_op_e(BRANCH_OPERATION.ALU).to_logicarray(),
+        "Var":word_t(0).to_logicarray()
     })
-    await sample_comb(dut, samples, [("new_pc_value", "uint")])
+    await sample_comb(dut, samples, [("PC_Result", "uint")])
     
     assert samples == [
-        {"new_pc_value":4},         # nobranch - next insn
-        {"new_pc_value":2},         # zero (0) - immediate
-        {"new_pc_value":4},         # zero (1) - next insn
-        {"new_pc_value":4},         # nzero (1) - next insn
-        {"new_pc_value":2},         # nzero (0) - immediate
-        {"new_pc_value":0},         # ALU - immediate
+        {"PC_Result":4},         # nobranch - next insn
+        {"PC_Result":2},         # zero (0) - immediate
+        {"PC_Result":4},         # zero (1) - next insn
+        {"PC_Result":4},         # nzero (1) - next insn
+        {"PC_Result":2},         # nzero (0) - immediate
+        {"PC_Result":0},         # ALU - immediate
     ]
 
 def test_branch_evaluator_runner():

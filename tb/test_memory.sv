@@ -5,22 +5,22 @@ module test_memory();
 logic clock;
 
 // Port A
-types::word_t portA_addr;
-types::word_t portA_writeval;
-types::word_t portA_memval;
-types::byte_select_t portA_write_enable;
+types::word_t PortA_Addr;
+types::word_t PortA_WData;
+types::word_t PortA_Out;
+types::byte_select_t PortA_WriteSelect;
 
-types::word_t portB_addr;
-types::word_t portB_writeval;
-types::word_t portB_memval;
-types::byte_select_t portB_write_enable;
+types::word_t PortB_Addr;
+types::word_t PortB_WData;
+types::word_t PortB_Out;
+types::byte_select_t PortB_WriteSelect;
 
 memory mem (
-    .clk(clock),
-    .portA_addr(portA_addr), .portB_addr(portB_addr),
-    .portA_writeval(portA_writeval), .portB_writeval(portB_writeval),
-    .portA_write_enable(portA_write_enable), .portB_write_enable(portB_write_enable),
-    .portA_memval(portA_memval), .portB_memval(portB_memval)
+    .clock(clock),
+    .PortA_Addr(PortA_Addr),               .PortB_Addr(PortB_Addr),
+    .PortA_WData(PortA_WData),             .PortB_WData(PortB_WData),
+    .PortA_WriteSelect(PortA_WriteSelect), .PortB_WriteSelect(PortB_WriteSelect),
+    .PortA_Out(PortA_Out),                 .PortB_Out(PortB_Out)
 );
 
 endmodule

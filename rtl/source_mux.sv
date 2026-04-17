@@ -2,24 +2,24 @@ import types::word_t;
 import types::source_set_e;
 
 module source_mux (
-    input types::source_set_e srcset,
-    input types::word_t instr_imm, pc, reg_rs1, reg_rs2,
-    output types::word_t a, b
+    input types::source_set_e Set,
+    input types::word_t Imm, PC, RS1, RS2,
+    output types::word_t A, B
 );
     
 always_comb begin
-    unique case (srcset)
+    unique case (Set)
         types::SRCSET_RS1_RS2: begin
-            a = reg_rs1; b = reg_rs2;
+            A = RS1; B = RS2;
         end
         types::SRCSET_RS1_IMM: begin
-            a = reg_rs1; b = instr_imm;
+            A = RS1; B = Imm;
         end
         types::SRCSET_PC_IMM: begin
-            a = pc; b = instr_imm;
+            A = PC; B = Imm;
         end
         default: begin
-            a = '0; b = '0; //this should never happen
+            A = '0; B = '0; //this should never happen
         end
     endcase
 end

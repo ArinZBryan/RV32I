@@ -1,8 +1,8 @@
 import types::*;
 module test_decoder ();
 
-types::raw_instruction_t raw;
-types::instruction_t decoded;
+types::raw_instruction_t Raw;
+types::instruction_t Decoded;
 
-decoder d(.raw(raw), .decoded(decoded));
+decoder d(.Raw(Raw), .Decoded(Decoded));
 endmodule

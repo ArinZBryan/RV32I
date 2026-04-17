@@ -15,12 +15,12 @@ async def init_testbench(dut):
     """
     Sets up the clock, initialises control signals to 0, unsets write_enable and brings the testbench out of reset.
     """
-    dut["portA_addr"].value = uword_t(0).to_logicarray()
-    dut["portA_writeval"].value = uword_t(0).to_logicarray()
-    dut["portA_write_enable"].value = byte_select_t(0).to_logicarray()
-    dut["portB_addr"].value = uword_t(0).to_logicarray()
-    dut["portB_writeval"].value = uword_t(0).to_logicarray()
-    dut["portB_write_enable"].value = byte_select_t(0).to_logicarray()
+    dut["PortA_Addr"].value = uword_t(0).to_logicarray()
+    dut["PortA_WData"].value = uword_t(0).to_logicarray()
+    dut["PortA_WriteSelect"].value = byte_select_t(0).to_logicarray()
+    dut["PortB_Addr"].value = uword_t(0).to_logicarray()
+    dut["PortB_WData"].value = uword_t(0).to_logicarray()
+    dut["PortB_WriteSelect"].value = byte_select_t(0).to_logicarray()
     
     mem_contents = readmemb(str(Path(__file__).parent / "65536_random_bytes.bin"))
     for i in range(0, 1 << 16):
@@ -36,22 +36,22 @@ async def init_testbench(dut):
 async def sv_mem_read(dut, clk, addr_a : uword_t | int, addr_b : uword_t | int):
     sample = []
     await set_sync(dut, clk, {
-        "portA_addr" : coerce_to_u32_bits(addr_a).to_logicarray(),
-        "portB_addr" : coerce_to_u32_bits(addr_b).to_logicarray(),
-        "portA_write_enable" : byte_select_t(0).to_logicarray(),
-        "portB_write_enable" : byte_select_t(0).to_logicarray()
+        "PortA_Addr" : coerce_to_u32_bits(addr_a).to_logicarray(),
+        "PortB_Addr" : coerce_to_u32_bits(addr_b).to_logicarray(),
+        "PortA_WriteSelect" : byte_select_t(0).to_logicarray(),
+        "PortB_WriteSelect" : byte_select_t(0).to_logicarray()
     })
-    await sample_sync(dut, clk, sample, [("portA_memval", "uint"), ("portB_memval", "uint")])
+    await sample_sync(dut, clk, sample, [("PortA_Out", "uint"), ("PortB_Out", "uint")])
     return sample[0]
     
 async def sv_mem_write(dut, clk, addr_a : uword_t | int, addr_b : uword_t | int, val_a : word_t | uword_t | int, val_b : word_t | uword_t | int, bytes_a : byte_select_t | int, bytes_b : byte_select_t | int):
     await set_sync(dut, clk, {
-        "portA_addr" : coerce_to_u32_bits(addr_a).to_logicarray(),
-        "portB_addr" : coerce_to_u32_bits(addr_b).to_logicarray(),
-        "portA_writeval" : coerce_to_u32_bits(val_a).to_logicarray(),
-        "portB_writeval" : coerce_to_u32_bits(val_b).to_logicarray(),
-        "portA_write_enable" : (byte_select_t(bytes_a) if isinstance(bytes_a, int) else bytes_a).to_logicarray(),
-        "portB_write_enable" : (byte_select_t(bytes_b) if isinstance(bytes_b, int) else bytes_b).to_logicarray()
+        "PortA_Addr" : coerce_to_u32_bits(addr_a).to_logicarray(),
+        "PortB_Addr" : coerce_to_u32_bits(addr_b).to_logicarray(),
+        "PortA_WData" : coerce_to_u32_bits(val_a).to_logicarray(),
+        "PortB_WData" : coerce_to_u32_bits(val_b).to_logicarray(),
+        "PortA_WriteSelect" : (byte_select_t(bytes_a) if isinstance(bytes_a, int) else bytes_a).to_logicarray(),
+        "PortB_WriteSelect" : (byte_select_t(bytes_b) if isinstance(bytes_b, int) else bytes_b).to_logicarray()
     })
     
 def py_mem_read(mem : list[LogicArray], addr_a : uword_t | int, addr_b : uword_t | int):
@@ -59,13 +59,13 @@ def py_mem_read(mem : list[LogicArray], addr_a : uword_t | int, addr_b : uword_t
     addr_b_int = (addr_b.to_unsigned() if isinstance(addr_b, uword_t) else addr_b) & ((1 << MEM_SIZE_BITS) - 1)
     
     return {
-        "portA_memval": (
+        "PortA_Out": (
             uword_t(mem[addr_a_int + 3].to_unsigned()) << 24 |
             uword_t(mem[addr_a_int + 2].to_unsigned()) << 16 |
             uword_t(mem[addr_a_int + 1].to_unsigned()) << 8  |
             uword_t(mem[addr_a_int    ].to_unsigned())
         ).to_unsigned(),
-        "portB_memval": (
+        "PortB_Out": (
             uword_t(mem[addr_b_int + 3].to_unsigned()) << 24 |
             uword_t(mem[addr_b_int + 2].to_unsigned()) << 16 |
             uword_t(mem[addr_b_int + 1].to_unsigned()) << 8  |

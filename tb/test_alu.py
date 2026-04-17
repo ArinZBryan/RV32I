@@ -39,12 +39,12 @@ async def test_alu_instructions(dut):
         sample = []
         cocotb.log.info(f"Test: {test[1].to_signed()} {ALU_OPERATION(test[0].to_unsigned()).__repr__()} {test[2].to_signed()}")
         await set_comb(dut, {
-            "alu_op":test[0].to_logicarray(),
-            "a":test[1].to_logicarray(),
-            "b":test[2].to_logicarray()
+            "Op":test[0].to_logicarray(),
+            "In_A":test[1].to_logicarray(),
+            "In_B":test[2].to_logicarray()
         })
-        await sample_comb(dut, sample, [("result", "int")])
-        assert py_alu_eval(*test).to_signed() == sample[0]["result"]
+        await sample_comb(dut, sample, [("Out", "int")])
+        assert py_alu_eval(*test).to_signed() == sample[0]["Out"]
     
 
 

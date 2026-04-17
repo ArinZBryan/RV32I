@@ -1,20 +1,20 @@
 import types::*;
 
 module branch_evaluator(
-    input types::word_t alu_result,
-    input types::word_t pc, pc_next,
-    input types::word_t instr_imm,
-    input types::branch_op_e branch_type,
-    output types::word_t new_pc_value
+    input types::word_t Var,
+    input types::word_t PC_Cur, PC_Next,
+    input types::word_t Offset,
+    input types::branch_op_e Type,
+    output types::word_t PC_Result
 );
 
 always_comb begin
-    unique case (branch_type)
-        BRANCH_NOBRANCH: new_pc_value = pc_next;
-        BRANCH_OFFSET_ZERO: new_pc_value = (alu_result == '0) ? pc + instr_imm : pc_next;
-        BRANCH_OFFSET_NZERO: new_pc_value = (alu_result != '0) ? pc + instr_imm : pc_next;
-        BRANCH_ALU: new_pc_value = alu_result;
-        default: new_pc_value = pc;
+    unique case (Type)
+        BRANCH_NOBRANCH: PC_Result = PC_Next;
+        BRANCH_OFFSET_ZERO: PC_Result = (Var == '0) ? PC_Cur + Offset : PC_Next;
+        BRANCH_OFFSET_NZERO: PC_Result = (Var != '0) ? PC_Cur + Offset : PC_Next;
+        BRANCH_ALU: PC_Result = Var;
+        default: PC_Result = PC_Cur;
     endcase
 end
 

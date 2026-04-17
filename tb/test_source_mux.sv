@@ -1,22 +1,22 @@
 import types::*;
 module test_source_mux ();
 
-types::source_set_e input_srcset;
-types::word_t input_instr_imm;
-types::word_t input_pc;
-types::word_t input_reg_rs1;
-types::word_t input_reg_rs2;
-types::word_t output_a; 
-types::word_t output_b;
+types::source_set_e Set;
+types::word_t Imm;
+types::word_t PC;
+types::word_t RS1;
+types::word_t RS2;
+types::word_t A; 
+types::word_t B;
 
 source_mux sm(
-    .srcset(input_srcset),
-    .instr_imm(input_instr_imm),
-    .pc(input_pc),
-    .reg_rs1(input_reg_rs1),
-    .reg_rs2(input_reg_rs2),
-    .a(output_a),
-    .b(output_b)
+    .Set(Set),
+    .Imm(Imm),
+    .PC(PC),
+    .RS1(RS1),
+    .RS2(RS2),
+    .A(A),
+    .B(B)
 );
 
 endmodule

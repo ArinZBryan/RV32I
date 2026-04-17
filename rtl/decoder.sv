@@ -1,8 +1,8 @@
 import types::*;
 
 module decoder (
-    input types::raw_instruction_t raw,
-    output types::instruction_t decoded
+    input types::raw_instruction_t Raw,
+    output types::instruction_t Decoded
 );
 
 function automatic types::instruction_t decode_r(types::raw_instruction_t raw);
@@ -175,19 +175,19 @@ function automatic types::instruction_t decode_fence(types::raw_instruction_t ra
 endfunction
 
 always_comb begin
-    unique case (raw.opcode)
-        7'b0110011: decoded = decode_r(raw);
-        7'b0010011: decoded = decode_i_maths(raw);
-        7'b0000011: decoded = decode_i_load(raw);
-        7'b0100011: decoded = decode_s(raw);
-        7'b1100011: decoded = decode_b(raw);
-        7'b1101111: decoded = decode_j(raw);
-        7'b1100111: decoded = decode_i_jalr(raw);
-        7'b0110111: decoded = decode_u_lui(raw);
-        7'b0010111: decoded = decode_u_auipc(raw);
-        7'b1110011: decoded = decode_i_csr(raw);    // forwards to decode_invalid
-        7'b0001111: decoded = decode_fence(raw);    // forwards to decode_invalid
-        default: decoded = decode_invalid(raw);
+    unique case (Raw.opcode)
+        7'b0110011: Decoded = decode_r(Raw);
+        7'b0010011: Decoded = decode_i_maths(Raw);
+        7'b0000011: Decoded = decode_i_load(Raw);
+        7'b0100011: Decoded = decode_s(Raw);
+        7'b1100011: Decoded = decode_b(Raw);
+        7'b1101111: Decoded = decode_j(Raw);
+        7'b1100111: Decoded = decode_i_jalr(Raw);
+        7'b0110111: Decoded = decode_u_lui(Raw);
+        7'b0010111: Decoded = decode_u_auipc(Raw);
+        7'b1110011: Decoded = decode_i_csr(Raw);    // forwards to decode_invalid
+        7'b0001111: Decoded = decode_fence(Raw);    // forwards to decode_invalid
+        default: Decoded = decode_invalid(Raw);
     endcase
 end
 

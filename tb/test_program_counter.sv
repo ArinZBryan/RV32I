@@ -2,18 +2,18 @@ import types::word_t;
 
 module test_program_counter ();
 
-logic Clk;
-logic Reset;
-types::word_t PC_branch_to;
-types::word_t PC;
-types::word_t PC_next;
+logic clock;
+logic _reset;
+types::word_t PC_New;
+types::word_t PC_Current;
+types::word_t PC_Next;
 
 program_counter #(.RESET_ADDR('0)) pc(
-    .Clk(Clk), 
-    ._Reset(Reset), 
-    .PC_branch_to(PC_branch_to), 
-    .PC(PC), 
-    .PC_next(PC_next)
+    .clock(clock), 
+    ._reset(_reset), 
+    .PC_New(PC_New), 
+    .PC_Current(PC_Current), 
+    .PC_Next(PC_Next)
 );
 
 endmodule;

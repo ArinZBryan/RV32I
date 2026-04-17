@@ -15,37 +15,37 @@ async def test_srcset_opts(dut):
     samples : list[dict[str, object]] = []
     
     await set_comb(dut, {
-        "input_instr_imm" : word_t(0x696d6d).to_logicarray(),
-        "input_pc"        : word_t(0x7063).to_logicarray(),
-        "input_reg_rs1"   : word_t(0x727331).to_logicarray(),
-        "input_reg_rs2"   : word_t(0x727332).to_logicarray()
+        "Imm" : word_t(0x696d6d).to_logicarray(),
+        "PC"        : word_t(0x7063).to_logicarray(),
+        "RS1"   : word_t(0x727331).to_logicarray(),
+        "RS2"   : word_t(0x727332).to_logicarray()
     })
     
     await set_comb(dut, {
-        "input_srcset" :  source_set_e(SOURCE_SET.RS1_RS2).to_logicarray()
+        "Set" :  source_set_e(SOURCE_SET.RS1_RS2).to_logicarray()
     })
-    await sample_comb(dut, samples, [("output_a", "uint"), ("output_b", "uint")])
+    await sample_comb(dut, samples, [("A", "uint"), ("B", "uint")])
     
     await set_comb(dut, {
-        "input_srcset" : source_set_e(SOURCE_SET.RS1_IMM).to_logicarray()
+        "Set" : source_set_e(SOURCE_SET.RS1_IMM).to_logicarray()
     })
-    await sample_comb(dut, samples, [("output_a", "uint"), ("output_b", "uint")])
+    await sample_comb(dut, samples, [("A", "uint"), ("B", "uint")])
     
     await set_comb(dut, {
-        "input_srcset" : source_set_e(SOURCE_SET.PC_IMM).to_logicarray()
+        "Set" : source_set_e(SOURCE_SET.PC_IMM).to_logicarray()
     })
-    await sample_comb(dut, samples, [("output_a", "uint"), ("output_b", "uint")])
+    await sample_comb(dut, samples, [("A", "uint"), ("B", "uint")])
     
     await set_comb(dut, {
-        "input_srcset" : source_set_e(SOURCE_SET.INVALID_0).to_logicarray()
+        "Set" : source_set_e(SOURCE_SET.INVALID_0).to_logicarray()
     })
-    await sample_comb(dut, samples, [("output_a", "uint"), ("output_b", "uint")])
+    await sample_comb(dut, samples, [("A", "uint"), ("B", "uint")])
     
     assert samples == [
-        {"output_a":0x727331, "output_b":0x727332},
-        {"output_a":0x727331, "output_b":0x696d6d},
-        {"output_a":0x7063,   "output_b":0x696d6d},
-        {"output_a":0,        "output_b":0}
+        {"A":0x727331, "B":0x727332},
+        {"A":0x727331, "B":0x696d6d},
+        {"A":0x7063,   "B":0x696d6d},
+        {"A":0,        "B":0}
     ]    
     
 def test_source_mux_runner():

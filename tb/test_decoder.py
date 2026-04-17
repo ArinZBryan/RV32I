@@ -29,13 +29,13 @@ async def decode_valid_r_instructions(dut):
     }
     
     for _,v in raw_instrs.items():
-        await set_comb(dut, {"raw" : v })
-        await sample_comb(dut, sv_decoded_instrs, [("decoded", "unknown")])
+        await set_comb(dut, {"Raw" : v })
+        await sample_comb(dut, sv_decoded_instrs, [("Decoded", "unknown")])
         py_decoded_instrs.append(decode(v))
         
     for i in range(0, len(py_decoded_instrs)):
-        cocotb.log.info(instruction(sv_decoded_instrs[i]["decoded"]).to_str())
-        assert str(py_decoded_instrs[i]) == str(sv_decoded_instrs[i]["decoded"])
+        cocotb.log.info(instruction(sv_decoded_instrs[i]["Decoded"]).to_str())
+        assert str(py_decoded_instrs[i]) == str(sv_decoded_instrs[i]["Decoded"])
     
 @cocotb.test()
 async def decode_unsupported_instruction(dut):
@@ -60,13 +60,13 @@ async def decode_unsupported_instruction(dut):
     }
     
     for _,v in raw_instrs.items():
-        await set_comb(dut, {"raw" : v })
-        await sample_comb(dut, sv_decoded_instrs, [("decoded", "unknown")])
+        await set_comb(dut, {"Raw" : v })
+        await sample_comb(dut, sv_decoded_instrs, [("Decoded", "unknown")])
         py_decoded_instrs.append(decode(v))
         
     for i in range(0, len(py_decoded_instrs)):
-        cocotb.log.info(instruction(sv_decoded_instrs[i]["decoded"]).to_str())
-        assert str(py_decoded_instrs[i]) == str(sv_decoded_instrs[i]["decoded"])
+        cocotb.log.info(instruction(sv_decoded_instrs[i]["Decoded"]).to_str())
+        assert str(py_decoded_instrs[i]) == str(sv_decoded_instrs[i]["Decoded"])
         
 @cocotb.test()
 async def decode_valid_i_instructions(dut):
@@ -91,13 +91,13 @@ async def decode_valid_i_instructions(dut):
     }
     
     for _,v in raw_instrs.items():
-        await set_comb(dut, {"raw" : v })
-        await sample_comb(dut, sv_decoded_instrs, [("decoded", "unknown")])
+        await set_comb(dut, {"Raw" : v })
+        await sample_comb(dut, sv_decoded_instrs, [("Decoded", "unknown")])
         py_decoded_instrs.append(decode(v))
         
     for i in range(0, len(py_decoded_instrs)):
-        cocotb.log.info(instruction(sv_decoded_instrs[i]["decoded"]).to_str())
-        assert str(py_decoded_instrs[i]) == str(sv_decoded_instrs[i]["decoded"])
+        cocotb.log.info(instruction(sv_decoded_instrs[i]["Decoded"]).to_str())
+        assert str(py_decoded_instrs[i]) == str(sv_decoded_instrs[i]["Decoded"])
 
 @cocotb.test()
 async def decode_invalid_i_instructions(dut):
@@ -117,13 +117,13 @@ async def decode_invalid_i_instructions(dut):
     }
     
     for _,v in raw_instrs.items():
-        await set_comb(dut, {"raw" : v })
-        await sample_comb(dut, sv_decoded_instrs, [("decoded", "unknown")])
+        await set_comb(dut, {"Raw" : v })
+        await sample_comb(dut, sv_decoded_instrs, [("Decoded", "unknown")])
         py_decoded_instrs.append(decode(v))
         
     for i in range(0, len(py_decoded_instrs)):
-        cocotb.log.info(instruction(sv_decoded_instrs[i]["decoded"]).to_str())
-        assert str(py_decoded_instrs[i]) == str(sv_decoded_instrs[i]["decoded"])
+        cocotb.log.info(instruction(sv_decoded_instrs[i]["Decoded"]).to_str())
+        assert str(py_decoded_instrs[i]) == str(sv_decoded_instrs[i]["Decoded"])
 
 @cocotb.test()
 async def decode_valid_s_instructions(dut):
@@ -136,13 +136,13 @@ async def decode_valid_s_instructions(dut):
     }
     
     for _,v in raw_instrs.items():
-        await set_comb(dut, {"raw" : v })
-        await sample_comb(dut, sv_decoded_instrs, [("decoded", "unknown")])
+        await set_comb(dut, {"Raw" : v })
+        await sample_comb(dut, sv_decoded_instrs, [("Decoded", "unknown")])
         py_decoded_instrs.append(decode(v))
         
     for i in range(0, len(py_decoded_instrs)):
-        cocotb.log.info(instruction(sv_decoded_instrs[i]["decoded"]).to_str())
-        assert str(py_decoded_instrs[i]) == str(sv_decoded_instrs[i]["decoded"])
+        cocotb.log.info(instruction(sv_decoded_instrs[i]["Decoded"]).to_str())
+        assert str(py_decoded_instrs[i]) == str(sv_decoded_instrs[i]["Decoded"])
 
 @cocotb.test()
 async def decode_invalid_s_instructions(dut):
@@ -157,13 +157,13 @@ async def decode_invalid_s_instructions(dut):
     }
     
     for _,v in raw_instrs.items():
-        await set_comb(dut, {"raw" : v })
-        await sample_comb(dut, sv_decoded_instrs, [("decoded", "unknown")])
+        await set_comb(dut, {"Raw" : v })
+        await sample_comb(dut, sv_decoded_instrs, [("Decoded", "unknown")])
         py_decoded_instrs.append(decode(v))
         
     for i in range(0, len(py_decoded_instrs)):
-        cocotb.log.info(instruction(sv_decoded_instrs[i]["decoded"]).to_str())
-        assert str(py_decoded_instrs[i]) == str(sv_decoded_instrs[i]["decoded"])
+        cocotb.log.info(instruction(sv_decoded_instrs[i]["Decoded"]).to_str())
+        assert str(py_decoded_instrs[i]) == str(sv_decoded_instrs[i]["Decoded"])
 
 @cocotb.test()
 async def decode_valid_b_instructions(dut):
@@ -179,14 +179,14 @@ async def decode_valid_b_instructions(dut):
     }
     
     for _,v in raw_instrs.items():
-        await set_comb(dut, {"raw" : v })
-        await sample_comb(dut, sv_decoded_instrs, [("decoded", "unknown")])
+        await set_comb(dut, {"Raw" : v })
+        await sample_comb(dut, sv_decoded_instrs, [("Decoded", "unknown")])
         py_decoded_instrs.append(decode(v))
         
     for i in range(0, len(py_decoded_instrs)):
         cocotb.log.info("python: " + instruction(py_decoded_instrs[i]).to_str())
-        cocotb.log.info("rtl: " + instruction(sv_decoded_instrs[i]["decoded"]).to_str())
-        assert str(py_decoded_instrs[i]) == str(sv_decoded_instrs[i]["decoded"])
+        cocotb.log.info("rtl: " + instruction(sv_decoded_instrs[i]["Decoded"]).to_str())
+        assert str(py_decoded_instrs[i]) == str(sv_decoded_instrs[i]["Decoded"])
   
 @cocotb.test()
 async def decode_invalid_b_instructions(dut):
@@ -198,13 +198,13 @@ async def decode_invalid_b_instructions(dut):
     }
     
     for _,v in raw_instrs.items():
-        await set_comb(dut, {"raw" : v })
-        await sample_comb(dut, sv_decoded_instrs, [("decoded", "unknown")])
+        await set_comb(dut, {"Raw" : v })
+        await sample_comb(dut, sv_decoded_instrs, [("Decoded", "unknown")])
         py_decoded_instrs.append(decode(v))
         
     for i in range(0, len(py_decoded_instrs)):
-        cocotb.log.info(instruction(sv_decoded_instrs[i]["decoded"]).to_str())
-        assert str(py_decoded_instrs[i]) == str(sv_decoded_instrs[i]["decoded"])
+        cocotb.log.info(instruction(sv_decoded_instrs[i]["Decoded"]).to_str())
+        assert str(py_decoded_instrs[i]) == str(sv_decoded_instrs[i]["Decoded"])
 
 @cocotb.test()
 async def decode_valid_j_instructions(dut):
@@ -215,14 +215,14 @@ async def decode_valid_j_instructions(dut):
     }
     
     for _,v in raw_instrs.items():
-        await set_comb(dut, {"raw" : v })
-        await sample_comb(dut, sv_decoded_instrs, [("decoded", "unknown")])
+        await set_comb(dut, {"Raw" : v })
+        await sample_comb(dut, sv_decoded_instrs, [("Decoded", "unknown")])
         py_decoded_instrs.append(decode(v))
         
     for i in range(0, len(py_decoded_instrs)):
         cocotb.log.info("python: " + instruction(py_decoded_instrs[i]).to_str())
-        cocotb.log.info("rtl: " + instruction(sv_decoded_instrs[i]["decoded"]).to_str())
-        assert str(py_decoded_instrs[i]) == str(sv_decoded_instrs[i]["decoded"])
+        cocotb.log.info("rtl: " + instruction(sv_decoded_instrs[i]["Decoded"]).to_str())
+        assert str(py_decoded_instrs[i]) == str(sv_decoded_instrs[i]["Decoded"])
 
 @cocotb.test()
 async def decode_valid_u_instructions(dut):
@@ -234,14 +234,14 @@ async def decode_valid_u_instructions(dut):
     }
     
     for _,v in raw_instrs.items():
-        await set_comb(dut, {"raw" : v })
-        await sample_comb(dut, sv_decoded_instrs, [("decoded", "unknown")])
+        await set_comb(dut, {"Raw" : v })
+        await sample_comb(dut, sv_decoded_instrs, [("Decoded", "unknown")])
         py_decoded_instrs.append(decode(v))
         
     for i in range(0, len(py_decoded_instrs)):
         cocotb.log.info("python: " + instruction(py_decoded_instrs[i]).to_str())
-        cocotb.log.info("rtl: " + instruction(sv_decoded_instrs[i]["decoded"]).to_str())
-        assert str(py_decoded_instrs[i]) == str(sv_decoded_instrs[i]["decoded"])
+        cocotb.log.info("rtl: " + instruction(sv_decoded_instrs[i]["Decoded"]).to_str())
+        assert str(py_decoded_instrs[i]) == str(sv_decoded_instrs[i]["Decoded"])
 
 def test_decoder_runner():  
     sim = "verilator"

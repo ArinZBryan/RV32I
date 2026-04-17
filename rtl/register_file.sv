@@ -2,31 +2,31 @@ import types::word_t;
 import types::regref_t;
 
 module register_file (
-    input logic clk, _reset,
-    input types::regref_t read_reg_a, read_reg_b,
-    input types::regref_t write_reg,
-    input types::word_t write_value,
-    input logic write_enable,
-    output types::word_t a_out, b_out
+    input logic clock, _reset,
+    input types::regref_t Select_rs1, Select_rs2,
+    input types::regref_t WSelect,
+    input types::word_t WData,
+    input logic WE,
+    output types::word_t Out_rs1, Out_rs2
 );
 
 types::word_t regs [32];
 
-always_ff @(posedge clk, negedge _reset) begin
+always_ff @(posedge clock, negedge _reset) begin
     if (!_reset) begin
         for (int i=0; i<32; ++i)
         begin: blk_reset_regs
             regs[i] <= 0;
         end
     end else begin
-        if (write_enable && write_reg != '0)
-            regs[write_reg] <= write_value;
+        if (WE && WSelect != '0)
+            regs[WSelect] <= WData;
     end
 end
 
 always_comb begin
-    a_out = regs[read_reg_a];
-    b_out = regs[read_reg_b];
+    Out_rs1 = regs[Select_rs1];
+    Out_rs2 = regs[Select_rs2];
 end
 
 endmodule

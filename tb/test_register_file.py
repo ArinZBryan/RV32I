@@ -14,14 +14,14 @@ async def init_testbench(dut):
     Sets up the clock, initialises control signals to 0, unsets write_enable and brings the testbench out of reset.
     """
     dut["_reset"].value = Logic('0')
-    dut["read_reg_a"].value = regref_t(REG.zero).to_logicarray()
-    dut["read_reg_b"].value = regref_t(REG.zero).to_logicarray()
-    dut["write_reg"].value = regref_t(REG.zero).to_logicarray()
-    dut["write_value"].value = word_t(12).to_logicarray()
-    dut["write_enable"].value = Logic('0')
+    dut["Select_rs1"].value = regref_t(REG.zero).to_logicarray()
+    dut["Select_rs2"].value = regref_t(REG.zero).to_logicarray()
+    dut["WSelect"].value = regref_t(REG.zero).to_logicarray()
+    dut["WData"].value = word_t(12).to_logicarray()
+    dut["WE"].value = Logic('0')
     
-    Clock(dut.clk, 1, "us").start()
-    await FallingEdge(dut.clk)
+    Clock(dut.clock, 1, "us").start()
+    await FallingEdge(dut.clock)
     dut["_reset"].value = Logic('1')
     
 @cocotb.test()
@@ -30,12 +30,12 @@ async def test_read_x0(dut):
     
     samples : list[dict[str, object]] = []
     
-    await set_sync(dut, dut.clk, {
-        "read_reg_a" : regref_t(REG.zero).to_logicarray(),
-        "read_reg_b" : regref_t(REG.zero).to_logicarray()
+    await set_sync(dut, dut.clock, {
+        "Select_rs1" : regref_t(REG.zero).to_logicarray(),
+        "Select_rs2" : regref_t(REG.zero).to_logicarray()
     })
-    await sample_sync(dut, dut.clk, samples, [("a_out", "uint"), ("b_out", "uint")])
-    assert samples == [{"a_out":0,"b_out":0}]    
+    await sample_sync(dut, dut.clock, samples, [("Out_rs1", "uint"), ("Out_rs2", "uint")])
+    assert samples == [{"Out_rs1":0,"Out_rs2":0}]    
 
 @cocotb.test()
 async def test_write_read_x0(dut):
@@ -43,15 +43,15 @@ async def test_write_read_x0(dut):
     
     samples : list[dict[str, object]] = []
     
-    await set_sync(dut, dut.clk, {
-        "read_reg_a" : regref_t(REG.zero).to_logicarray(),
-        "read_reg_b" : regref_t(REG.zero).to_logicarray(),
-        "write_enable" : Logic('1'),
-        "write_value": word_t(1).to_logicarray(),
-        "write_reg": regref_t(REG.zero).to_logicarray()
+    await set_sync(dut, dut.clock, {
+        "Select_rs1" : regref_t(REG.zero).to_logicarray(),
+        "Select_rs2" : regref_t(REG.zero).to_logicarray(),
+        "WE" : Logic('1'),
+        "WData": word_t(1).to_logicarray(),
+        "WSelect": regref_t(REG.zero).to_logicarray()
     })
-    await sample_sync(dut, dut.clk, samples, [("a_out", "uint"), ("b_out", "uint")])
-    assert samples == [{"a_out":0,"b_out":0}]  
+    await sample_sync(dut, dut.clock, samples, [("Out_rs1", "uint"), ("Out_rs2", "uint")])
+    assert samples == [{"Out_rs1":0,"Out_rs2":0}]  
 
 @cocotb.test()
 async def test_write_read_x1x2(dut):
@@ -59,20 +59,20 @@ async def test_write_read_x1x2(dut):
     
     samples : list[dict[str, object]] = []
     
-    await set_sync(dut, dut.clk, {
-        "read_reg_a" : regref_t(1).to_logicarray(),
-        "read_reg_b" : regref_t(2).to_logicarray(),
-        "write_enable" : Logic('1'),
-        "write_value": word_t(1).to_logicarray(),
-        "write_reg": regref_t(1).to_logicarray()
+    await set_sync(dut, dut.clock, {
+        "Select_rs1" : regref_t(1).to_logicarray(),
+        "Select_rs2" : regref_t(2).to_logicarray(),
+        "WE" : Logic('1'),
+        "WData": word_t(1).to_logicarray(),
+        "WSelect": regref_t(1).to_logicarray()
     })
-    await sample_sync(dut, dut.clk, samples, [("a_out", "uint"), ("b_out", "uint")])
-    await set_sync(dut, dut.clk, {
-        "write_value": word_t(2).to_logicarray(),
-        "write_reg": regref_t(2).to_logicarray()
+    await sample_sync(dut, dut.clock, samples, [("Out_rs1", "uint"), ("Out_rs2", "uint")])
+    await set_sync(dut, dut.clock, {
+        "WData": word_t(2).to_logicarray(),
+        "WSelect": regref_t(2).to_logicarray()
     })
-    await sample_sync(dut, dut.clk, samples, [("a_out", "uint"), ("b_out", "uint")])
-    assert samples == [{"a_out":1,"b_out":0}, {"a_out":1,"b_out":2}]  
+    await sample_sync(dut, dut.clock, samples, [("Out_rs1", "uint"), ("Out_rs2", "uint")])
+    assert samples == [{"Out_rs1":1,"Out_rs2":0}, {"Out_rs1":1,"Out_rs2":2}]  
 
 @cocotb.test()
 async def test_write_enable(dut):
@@ -80,17 +80,17 @@ async def test_write_enable(dut):
     
     samples : list[dict[str, object]] = []
     
-    await set_sync(dut, dut.clk, {
-        "read_reg_a" : regref_t(1).to_logicarray(),
-        "read_reg_b" : regref_t(REG.zero).to_logicarray(),
-        "write_enable" : Logic('0'),
-        "write_value": word_t(1).to_logicarray(),
-        "write_reg": regref_t(1).to_logicarray()
+    await set_sync(dut, dut.clock, {
+        "Select_rs1" : regref_t(1).to_logicarray(),
+        "Select_rs2" : regref_t(REG.zero).to_logicarray(),
+        "WE" : Logic('0'),
+        "WData": word_t(1).to_logicarray(),
+        "WSelect": regref_t(1).to_logicarray()
     })
-    await sample_sync(dut, dut.clk, samples, [("a_out", "uint"), ("b_out", "uint")])
-    await set_sync(dut, dut.clk, {"write_enable": Logic('1')})
-    await sample_sync(dut, dut.clk, samples, [("a_out", "uint"), ("b_out", "uint")])
-    assert samples == [{"a_out":0,"b_out":0}, {"a_out":1,"b_out":0}]  
+    await sample_sync(dut, dut.clock, samples, [("Out_rs1", "uint"), ("Out_rs2", "uint")])
+    await set_sync(dut, dut.clock, {"WE": Logic('1')})
+    await sample_sync(dut, dut.clock, samples, [("Out_rs1", "uint"), ("Out_rs2", "uint")])
+    assert samples == [{"Out_rs1":0,"Out_rs2":0}, {"Out_rs1":1,"Out_rs2":0}]  
 
 @cocotb.test()
 async def test_write_read_allregs(dut):
@@ -99,19 +99,19 @@ async def test_write_read_allregs(dut):
     samples : list[dict[str, object]] = []
     
     for i in range(0, 32):
-        await set_sync(dut, dut.clk, {
-            "write_enable" : Logic('1'),
-            "write_value": word_t(i).to_logicarray(),
-            "write_reg": regref_t(i).to_logicarray()
+        await set_sync(dut, dut.clock, {
+            "WE" : Logic('1'),
+            "WData": word_t(i).to_logicarray(),
+            "WSelect": regref_t(i).to_logicarray()
         })
     for i in range(0, 32):
-        await set_sync(dut, dut.clk, {
-            "write_enable" : Logic('0'),
-            "read_reg_a": regref_t(i).to_logicarray(),
+        await set_sync(dut, dut.clock, {
+            "WE" : Logic('0'),
+            "Select_rs1": regref_t(i).to_logicarray(),
         })
-        await sample_sync(dut, dut.clk, samples, [("a_out", "uint")])
+        await sample_sync(dut, dut.clock, samples, [("Out_rs1", "uint")])
     
-    assert samples == [{"a_out":i} for i in range(0, 32)]  
+    assert samples == [{"Out_rs1":i} for i in range(0, 32)]  
 
 def test_register_file_runner():
     sim = "verilator"
