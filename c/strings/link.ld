@@ -24,6 +24,7 @@ SECTIONS
 
     .rodata : {
         *(.rodata*)
+        *(COMMON)
     } > MEM
 
     . = ALIGN(4);
