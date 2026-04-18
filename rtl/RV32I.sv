@@ -115,7 +115,7 @@ types::word_t PortB_WData;
 types::byte_select_t PortB_WriteSelect;
 assign PortA_Addr = PC_Current;
 assign PortA_WData = 0;
-assign PortA_WriteSelect = 4'b1111;
+assign PortA_WriteSelect = 4'b0000;
 assign PortB_Addr = Mem_Addr;
 assign PortB_WData = Mem_WData;
 assign PortB_WriteSelect = Mem_ByteSelect;
@@ -180,7 +180,7 @@ result_mux module_result_mux(
     .Writeback(Writeback),
     .Writeback_Enable(Writeback_Enable)
 );
-memory #(.MEM_SIZE_BITS(24)) module_memory( //~16M of memory
+memory #(.MEM_SIZE_BITS(10)) module_memory( //~16M of memory
     .clock(clock),
     .PortA_Addr(PortA_Addr),
     .PortB_Addr(PortB_Addr),
