@@ -2,7 +2,7 @@ ENTRY(_start)
 
 MEMORY
 {
-    MEM (rwx) : ORIGIN = 0x00000000, LENGTH = 16M
+    MEM (rwx) : ORIGIN = 0x00000000, LENGTH = 1K
 }
 
 SECTIONS
