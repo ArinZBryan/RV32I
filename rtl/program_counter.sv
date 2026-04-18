@@ -12,7 +12,7 @@ assign PC_Next = PC_Current + 4;
 
 always_ff @(posedge clock, negedge _reset) begin
     if (~_reset) PC_Current <= RESET_ADDR;
-    PC_Current <= PC_New;
+    else PC_Current <= PC_New;
 end
 
 endmodule
