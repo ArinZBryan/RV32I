@@ -1,7 +1,7 @@
 import types::word_t;
 
 module program_counter #(
-    parameter types::word_t RESET_ADDR = 'h80000000
+    parameter types::word_t RESET_ADDR = 'h00000000
 ) (
     input logic clock, _reset,
     input types::word_t PC_New,

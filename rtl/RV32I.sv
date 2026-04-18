@@ -98,7 +98,7 @@ types::word_t Res_PC_Next;
 types::word_t Res_RS2;
 types::word_t Mem_RData;
 types::result_route_e Res_Route;
-types::mem_acc_size_e Res_Mem_Access_Size;
+types::mem_access_size_e Res_Mem_Access_Size;
 assign Res_ALU = ALU_Out;
 assign Res_PC_Next = PC_Next;
 assign Res_RS2 = Reg_RS2;
@@ -117,7 +117,7 @@ assign PortA_Addr = PC_Current;
 assign PortA_WData = 0;
 assign PortA_WriteSelect = 4'b1111;
 assign PortB_Addr = Mem_Addr;
-assign PortB_WDara = Mem_WData;
+assign PortB_WData = Mem_WData;
 assign PortB_WriteSelect = Mem_ByteSelect;
 
 
@@ -137,7 +137,7 @@ register_file module_register_file(
     .Out_rs1(Reg_RS1),
     .Out_rs2(Reg_RS2)
 );
-program_counter module_program_counter(
+program_counter #(.RESET_ADDR(0)) module_program_counter(
     .clock(clock),
     ._reset(_reset),
     .PC_New(PC_New),
@@ -169,7 +169,7 @@ branch_evaluator module_branch_evaluator(
 );
 result_mux module_result_mux(
     .Route(Res_Route),
-    .Mem_Access_Size(Mem_Access_Size),
+    .Mem_Access_Size(Res_Mem_Access_Size),
     .Res_ALU(Res_ALU),
     .PC_Next(Res_PC_Next),
     .RS2(Res_RS2),
@@ -180,7 +180,7 @@ result_mux module_result_mux(
     .Writeback(Writeback),
     .Writeback_Enable(Writeback_Enable)
 );
-memory module_memory(
+memory #(.MEM_SIZE_BITS(24)) module_memory( //~16M of memory
     .clock(clock),
     .PortA_Addr(PortA_Addr),
     .PortB_Addr(PortB_Addr),

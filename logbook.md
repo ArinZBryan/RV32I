@@ -102,3 +102,33 @@ Von Neumann is probably better to go with for the time being. Worst case, I crea
 - Spent far too long fixing every little piece of the new block diagram. At this point I couldn't even tell you what changes I've made since the first draft of it, other than that it's different. :/
 - Implemented a **complete** top module (`rtl/RV32I.sv`). I'm very hesistant to call it that, and feel I might be jinxing it by saying that since all the component modules pass tests and I've spent an inordinate ammount of time figuring out the exact 'wiring' while making the block diagram in excalidraw, it might be likely that _it just works_. (Begone Todd Howard, there is no 16x detail to be found here!)
 - It is 02:12AM on 17/04 by the time I am getting around to writing this, so it's time to go to bed ^-^
+
+# 17.04.26
+- installed riscv toolchain from lab 1 because I don't want to do a 6.5GB download of sourcecode just to build the compiler from scratch.
+- wrote very simple test script - `c/add/main.c` which just adds 1 to 2 and returns the result, but that should be complex enough to test the build system to check it is actually executing code when that gets written
+- I know that to get the code in the right place, I'll need to use a linker script, but idk how they work
+- [useful linker script tutorial](https://mcyoung.xyz/2021/06/01/linker-script/#fnref:13)
+- [example linker scripts for embedded](https://medium.com/@mkklyci/an-introduction-to-linker-files-crafting-your-own-for-embedded-projects-60ad17193229)
+- set RAM size to be 16MB rather than the 64KB I've been keeping it at so that my test program can be a bit bigger (if needed)
+- Wrote a basic linker script - since I'm not actually producing an ELF, I'm not sure that everything I've included is ne
+necessary, but I've read enough tutorials, and almost everything has a bootloader that reads elf headers, but I cba to make
+one.
+- apparently it's _undefined behaviour_ for C to do anything if the .bss and .data sections haven't been initialised. so I have to write that in assembly :(. At least it's small.
+- Also, while it's cool that linker scripts can inject symbols back up the compilation process, I absolutely hate it
+- I don't want to wait for ages if I put in a large timeout, so I need to have a way I can detect from cocotb to tell the
+test harness that the code is done, so that it doesn't just busy wait for the rest of the time
+- Either:
+    - Reserve a register as a 'I am done register' and continually check if it has some specific value
+        - Hope that the compiler never tries to use it and accidentally writes the value to kill the CPU then and there
+    - Reserve a memory address to write to for the same purpose, and when the value there equals a kill value, die.
+        - Because the file created after linking isn't necessarily the size of the memory, I can force the linker to
+        leave enough space for the memory, so that at the very least it won't exit literally immediately after loading.
+        I just need to make sure that I do actually have memory there though to write to.
+    - Reserving a register is simpler to observe in gtkwave, so went with that one. Plus, unless I'm using a truly monstrous ammount of variables, there's no way that GCC will try to use the _sixth_ temporary right?
+    - I am aware that this is definitely going to come back and bite me.
+- Looked [here](https://www.cs.colby.edu/maxwell/courses/tutorials/maketutor/) for infromation on how to make (hah!) a simple makefile to invoke literally _every single stage_ of the compilation pipeline individually
+- `-ffreestanding`, `-nostdlib` and `-nostartfiles` seem to be the magic combination of flags to get the compiler to literally compile _only_ my code and not try anything funny with pulling in OS-specific dependencies that I don't have access to. There might be even more flags, but idk
+- Wrote python `run_program.py` script to use cocotb to launch, load and run a .bin program on the rv32i core. It turns out that the tests actually run in a different environment to the main script, so it doesn't have any access to variables defined there. So the best I could figure out was to set an environment variable, and since linux processes are forked, the new python instances running the tests _should_ inherit them, and I can then read them back. Though that's as a string, so most of `argparse`'s hard work is for naught.
+
+**IT WORKS!**
+![add.c's waveform being shown in GTKWave](First_execution_waveform.png)
