@@ -1,8 +1,11 @@
 OBJCOPY=riscv32-unknown-elf-objcopy
+OBJDUMP=riscv32-unknown-elf-objdump
 CC=riscv32-unknown-elf-gcc
 CFLAGS=-march=rv32i -mabi=ilp32 -ffreestanding -nostdlib -nostartfiles -O0 -g
 AFLAGS=-march=rv32i -mabi=ilp32
 LDFLAGS=-march=rv32i -mabi=ilp32 -nostdlib -nostartfiles
+
+.PHONY: clean
 
 bin: program.elf
 	$(OBJCOPY) -O binary program.elf program.bin
@@ -16,3 +19,8 @@ start.o: start.s
 program.elf: main.o start.o
 	$(CC) $(LDFLAGS) -T link.ld start.o main.o -o program.elf
 
+clean:
+	rm program.bin program.elf main.o start.o objdump.txt
+
+objdump: program.elf
+	$(OBJDUMP) -d program.elf > objdump.txt

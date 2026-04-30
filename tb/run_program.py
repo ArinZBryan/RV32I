@@ -12,8 +12,7 @@ from cocotb_tools.runner import get_runner
 
 from util import *
 
-MEMORY_SIZE_BITS = 10
-PROGRAM_MAXIMUM_CYCLES = 100_000
+MEMORY_SIZE_BITS = 15
 
 @cocotb.test()
 async def run(dut):
@@ -44,8 +43,6 @@ async def run(dut):
             data = bytearray(size)
             mem = dut.rv32i.module_memory.memory
             for i in range(size):
-                if i % 100 == 0:
-                    cocotb.log.info(i)
                 data[i] = mem[i].value.to_unsigned() & 0xFF
             memdump.write_bytes(data)    
         raise Exception(f"Program timed out after {timeout} cycles")
@@ -57,8 +54,6 @@ async def run(dut):
         data = bytearray(size)
         mem = dut.rv32i.module_memory.memory
         for i in range(size):
-            if i % 100 == 0:
-                cocotb.log.info(i)
             data[i] = mem[i].value.to_unsigned() & 0xFF
         memdump.write_bytes(data)    
     

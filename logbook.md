@@ -138,3 +138,14 @@ test harness that the code is done, so that it doesn't just busy wait for the re
 - Added a memory dump feature to see what it was doing. This way, I can dump the contents of ram to a .bin file (if it is small, large rams take a while to dump) after the program terminates to see what happens
 - It turned out that data in the `.text` section was being zeroed during execution, which while possible (I have no memory protection of any kind), is not correct for standard C behaviour. This turned out to be because I had set the `PortA_WriteSelect` to `0xf` when it should have been `0x0`. This wrote the `PortA_WData` (always zero) to the memory location of the PC (`PortA_Addr`), overwriting instructions as they were executed, which broke every single loop which is not good. This came from copying my block diagram which had that mistake in it. The code and block diagram have been updated
 - Afterwards, I encountered a bug where the loop to set the `.bss` section was never finishing because the start was very small and the end was at the correct place, causing the simulation to time out as it tried to clear almost all of the data in memory. This was because the PC module was set to always increment the PC, no matter if it's just come out of reset or not. This meant that the first instruction executed was instruction 4 (or 8, I'm not quite sure). Either way, this mangled the writing of the `__bss_start` symbol, which caused this error. I fixed this by simply moving the PC advance to a new else clause on the reset check.
+
+# 27.04.26
+- Wrote `test` c program that tests all the supported instructions
+    - Verfied that it uses all the supported instructions by using the following command:
+    ```bash
+    riscv32-unknown-elf-objdump -d -s -M no-aliases program.elf | grep -P "\s[\dabcdef]*:" | grep -P "\s{4}([a-z]+)" -o | awk '{$1=$1};1' | sort | uniq > used_instructions.txt
+    ```
+    - Then, I manually sorted through the list of all the used instructions and checked against my table of RV32I instructions that I support
+- Test program shows that all 42 tests pass - All instructions operate as expected
+- Integrated `test` program into testbench suite
+- Fixed diagram issue where RS1 and RS2 out of the register file were swapped

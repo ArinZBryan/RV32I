@@ -51,7 +51,7 @@ async def decode_unsupported_instruction(dut):
     "csrrsi"     : raw_instruction.encode_i(0b1110011, REG(1), 6, REG(2), 0),
     "csrrci"     : raw_instruction.encode_i(0b1110011, REG(1), 7, REG(2), 0),
     "ecall"      : raw_instruction.encode_i(0b1110011, REG.zero, 1, REG.zero, 0),
-    "ebreak"     : raw_instruction.encode_i(0b1110011, REG.zero, 1, REG.zero, 1),
+    #"ebreak"     : raw_instruction.encode_i(0b1110011, REG.zero, 1, REG.zero, 1), # This will always fail, as this should kill the simulator
     "uret"       : raw_instruction.encode_i(0b1110011, REG.zero, 1, REG.zero, 2),
     "sret"       : raw_instruction.encode_i(0b1110011, REG.zero, 1, REG.zero, 0b000100000010),
     "mret"       : raw_instruction.encode_i(0b1110011, REG.zero, 1, REG.zero, 0b001100000010),

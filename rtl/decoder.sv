@@ -167,6 +167,7 @@ function automatic types::instruction_t decode_invalid(types::raw_instruction_t 
 endfunction
 
 function automatic types::instruction_t decode_i_csr(types::raw_instruction_t raw);
+    if (raw.fields.i.imm == 1) $finish;
     return decode_invalid(raw);
 endfunction
 
