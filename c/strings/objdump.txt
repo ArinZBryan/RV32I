@@ -1,0 +1,75 @@
+
+program.elf:     file format elf32-littleriscv
+
+
+Disassembly of section .text:
+
+00000000 <_start>:
+   0:	40000113          	li	sp,1024
+   4:	0e800293          	li	t0,232
+   8:	0e800313          	li	t1,232
+
+0000000c <bss_loop>:
+   c:	0062d863          	bge	t0,t1,1c <bss_done>
+  10:	0002a023          	sw	zero,0(t0)
+  14:	00428293          	addi	t0,t0,4
+  18:	ff5ff06f          	j	c <bss_loop>
+
+0000001c <bss_done>:
+  1c:	00000f93          	li	t6,0
+  20:	078000ef          	jal	ra,98 <main>
+  24:	00100f93          	li	t6,1
+
+00000028 <halt>:
+  28:	0000006f          	j	28 <halt>
+
+0000002c <memcpy>:
+  2c:	fd010113          	addi	sp,sp,-48
+  30:	02812623          	sw	s0,44(sp)
+  34:	03010413          	addi	s0,sp,48
+  38:	fca42e23          	sw	a0,-36(s0)
+  3c:	fcb42c23          	sw	a1,-40(s0)
+  40:	fcc42a23          	sw	a2,-44(s0)
+  44:	fe042623          	sw	zero,-20(s0)
+  48:	0300006f          	j	78 <memcpy+0x4c>
+  4c:	fdc42703          	lw	a4,-36(s0)
+  50:	fec42783          	lw	a5,-20(s0)
+  54:	00f70733          	add	a4,a4,a5
+  58:	fd842683          	lw	a3,-40(s0)
+  5c:	fec42783          	lw	a5,-20(s0)
+  60:	00f687b3          	add	a5,a3,a5
+  64:	00074703          	lbu	a4,0(a4)
+  68:	00e78023          	sb	a4,0(a5)
+  6c:	fec42783          	lw	a5,-20(s0)
+  70:	00178793          	addi	a5,a5,1
+  74:	fef42623          	sw	a5,-20(s0)
+  78:	fec42703          	lw	a4,-20(s0)
+  7c:	fd442783          	lw	a5,-44(s0)
+  80:	fcf766e3          	bltu	a4,a5,4c <memcpy+0x20>
+  84:	00000013          	nop
+  88:	00000013          	nop
+  8c:	02c12403          	lw	s0,44(sp)
+  90:	03010113          	addi	sp,sp,48
+  94:	00008067          	ret
+
+00000098 <main>:
+  98:	fe010113          	addi	sp,sp,-32
+  9c:	00112e23          	sw	ra,28(sp)
+  a0:	00812c23          	sw	s0,24(sp)
+  a4:	02010413          	addi	s0,sp,32
+  a8:	0e800793          	li	a5,232
+  ac:	fef42623          	sw	a5,-20(s0)
+  b0:	0f000793          	li	a5,240
+  b4:	fef42423          	sw	a5,-24(s0)
+  b8:	00e00613          	li	a2,14
+  bc:	fe842583          	lw	a1,-24(s0)
+  c0:	fec42503          	lw	a0,-20(s0)
+  c4:	f69ff0ef          	jal	ra,2c <memcpy>
+  c8:	fe842783          	lw	a5,-24(s0)
+  cc:	0007c783          	lbu	a5,0(a5)
+  d0:	0ff7f793          	andi	a5,a5,255
+  d4:	00078513          	mv	a0,a5
+  d8:	01c12083          	lw	ra,28(sp)
+  dc:	01812403          	lw	s0,24(sp)
+  e0:	02010113          	addi	sp,sp,32
+  e4:	00008067          	ret

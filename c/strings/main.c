@@ -8,7 +8,7 @@ int main() {
     const char* msg = "Hello, World!";
 
     // if the stack manages to grow to be 1MB, I'll be quite suprised.
-    const volatile char* somewhere_in_memory = (const volatile char*)512;
+    const volatile char* somewhere_in_memory = (const volatile char*)0x100;
     
     memcpy((void*)msg, (void*)somewhere_in_memory, 14);
 
