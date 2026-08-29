@@ -1,2 +1,17 @@
+[project]
+name = "AICE2008_RV32I_Core"
+version = "1.0.0"
+dependencies = [
+    "cocotb",
+    "pytest",
+    "aenum"
+]
+authors = [{name = "Arin Bryan", email = "azb1g24@soton.ac.uk"}]
+description = "A (mostly) RV32I compliant CPU core written in SystemVerilog for the Southampton University AICE2008 Coursework"
+readme = "README.md"
+
 [tool.pytest.ini_options]
 cache_dir = "tb/.pytest_cache"
+
+[tool.setuptools]
+packages = []

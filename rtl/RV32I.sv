@@ -180,7 +180,7 @@ result_mux module_result_mux(
     .Writeback(Writeback),
     .Writeback_Enable(Writeback_Enable)
 );
-memory #(.MEM_SIZE_BITS(10)) module_memory( //~16M of memory
+memory #(.MEM_SIZE_BITS(15)) module_memory( //~32k of memory
     .clock(clock),
     .PortA_Addr(PortA_Addr),
     .PortB_Addr(PortB_Addr),
